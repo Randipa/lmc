@@ -10,5 +10,6 @@ router.post('/notify', paymentController.handlePaymentNotify);
 router.post('/verify-payment', authenticateToken, paymentController.verifyPayment);
 router.get('/history', authenticateToken, paymentController.getPaymentHistory);
 router.get('/all', authenticateToken, requireAdmin, paymentController.getAllPayments);
+router.post('/approve/:orderId', authenticateToken, requireAdmin, paymentController.adminApprovePayment);
 
 module.exports = router;
