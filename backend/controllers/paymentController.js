@@ -222,26 +222,33 @@ exports.getPaymentHistory = async (req, res) => {
 exports.verifyPayment = async (req, res) => {
   try {
     const { orderId, paymentId } = req.body;
-    const userId = req.user.userId;
+    const requesterId = req.user.userId;
+    const isAdmin = req.user.userRole === 'admin';
 
     const payment = await Payment.findOne(orderId ? { orderId } : { paymentId })
       .populate('courseId', 'title description')
       .populate('userId', 'firstName lastName email');
 
-    if (!payment || payment.userId._id.toString() !== userId) {
-      return res.status(403).json({ message: 'Unauthorized or payment not found' });
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
     }
+
+    if (!isAdmin && payment.userId._id.toString() !== requesterId) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const paymentUserId = payment.userId._id;
 
     if (payment.status === 'completed') {
       const existing = await UserCourseAccess.findOne({
-        userId,
+        userId: paymentUserId,
         courseId: payment.courseId._id,
         expiresAt: { $gt: new Date() }
       });
 
       if (!existing) {
         await UserCourseAccess.create({
-          userId,
+          userId: paymentUserId,
           courseId: payment.courseId._id,
           purchasedAt: payment.completedAt || new Date(),
           expiresAt: getNext8th()
@@ -253,5 +260,18 @@ exports.verifyPayment = async (req, res) => {
   } catch (error) {
     console.error('Verify error:', error.message);
     res.status(500).json({ message: 'Verification failed' });
+  }
+};
+
+// Get all payments (Admin only)
+exports.getAllPayments = async (req, res) => {
+  try {
+    const payments = await Payment.find()
+      .populate('courseId', 'title')
+      .populate('userId', 'firstName lastName');
+    res.json({ success: true, payments });
+  } catch (error) {
+    console.error('Get all payments error:', error.message);
+    res.status(500).json({ message: 'Failed to fetch payments' });
   }
 };
