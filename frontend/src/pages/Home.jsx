@@ -38,6 +38,9 @@ const Home = () => {
         <Tile title="Shop" icon="🛒" link="/shop" />
         <Tile title="Student Dashboard" icon="📊" link="/dashboard" />
         <Tile title="E-Library" icon="📚" link="/e-library" />
+        {user?.userRole === 'admin' && (
+          <Tile title="Admin" icon="⚙️" link="/admin/courses" />
+        )}
       </div>
     </div>
   );

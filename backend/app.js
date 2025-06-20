@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const bankPaymentRoutes = require('./routes/bankPaymentRoutes');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/bank-payment', bankPaymentRoutes);
 app.use('/api', courseRoutes);
 
 

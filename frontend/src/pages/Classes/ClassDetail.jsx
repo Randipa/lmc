@@ -7,7 +7,7 @@ const ClassDetail = () => {
   const navigate = useNavigate();
   const [classData, setClassData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [slip, setSlip] = useState(null);
+  const [slipUrl, setSlipUrl] = useState('');
   const [message, setMessage] = useState('');
 
   const token = localStorage.getItem('token');
@@ -28,15 +28,15 @@ const ClassDetail = () => {
   const handleBankSubmit = async (e) => {
     e.preventDefault();
     if (!token) return navigate('/login');
-    if (!slip) return setMessage('Please choose a slip file.');
-
-    const formData = new FormData();
-    formData.append('courseId', classId);
-    formData.append('slip', slip);
+    if (!slipUrl) return setMessage('Please provide the slip URL.');
 
     try {
-      await api.post('/payment/bank-upload', formData);
-      setMessage('Slip uploaded! Awaiting admin approval.');
+      await api.post('/bank-payment/submit', {
+        courseId: classId,
+        zipUrl: slipUrl
+      });
+      setMessage('Slip submitted! Awaiting admin approval.');
+      setSlipUrl('');
     } catch (err) {
       setMessage('Upload failed.');
     }
@@ -89,9 +89,15 @@ const ClassDetail = () => {
 
       {token && (
         <>
-          <h5>📤 Upload Bank Slip</h5>
+          <h5>📤 Submit Bank Slip</h5>
           <form onSubmit={handleBankSubmit} className="mb-4">
-            <input type="file" className="form-control mb-2" onChange={(e) => setSlip(e.target.files[0])} />
+            <input
+              type="text"
+              className="form-control mb-2"
+              placeholder="Slip URL"
+              value={slipUrl}
+              onChange={(e) => setSlipUrl(e.target.value)}
+            />
             <button className="btn btn-outline-secondary">Submit Slip</button>
           </form>
 

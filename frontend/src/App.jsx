@@ -10,6 +10,7 @@ import GradeList from './pages/Classes/GradeList';
 import SubjectList from './pages/Classes/SubjectList';
 import TeacherList from './pages/Classes/TeacherList';
 import ClassDetail from './pages/Classes/ClassDetail';
+import AllClasses from './pages/Classes/AllClasses';
 
 // Shop
 import Shop from './pages/Shop/Shop';
@@ -26,7 +27,10 @@ import PaymentHistory from './pages/Dashboard/PaymentHistory';
 import ELibrary from './pages/ELibrary/ELibrary';
 
 // Admin Pages
-import CourseUploader from './pages/Admin/CourseUploader'; // Bunny uploader
+import CourseUploader from './pages/Admin/CourseUploader';
+import CourseList from './pages/Admin/CourseList';
+import CreateCourse from './pages/Admin/CreateCourse';
+import RequireAdmin from './components/RequireAdmin';
 
 function App() {
   return (
@@ -40,7 +44,8 @@ function App() {
         <Route path="/" element={<Home />} />
 
         {/* Classes Flow */}
-        <Route path="/classes" element={<GradeList />} />
+        <Route path="/classes" element={<AllClasses />} />
+        <Route path="/classes/legacy" element={<GradeList />} />
         <Route path="/classes/:gradeId/subjects" element={<SubjectList />} />
         <Route path="/classes/:gradeId/:subjectId/teachers" element={<TeacherList />} />
         <Route path="/class/:classId" element={<ClassDetail />} />
@@ -61,8 +66,10 @@ function App() {
         {/* Library */}
         <Route path="/e-library" element={<ELibrary />} />
 
-        {/* Admin Upload Bunny.net Video */}
-        <Route path="/admin/courses/:courseId/upload" element={<CourseUploader />} />
+        {/* Admin */}
+        <Route path="/admin/courses" element={<RequireAdmin><CourseList /></RequireAdmin>} />
+        <Route path="/admin/courses/create" element={<RequireAdmin><CreateCourse /></RequireAdmin>} />
+        <Route path="/admin/courses/:courseId/upload" element={<RequireAdmin><CourseUploader /></RequireAdmin>} />
       </Routes>
     </BrowserRouter>
   );
