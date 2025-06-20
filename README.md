@@ -38,5 +38,7 @@ A 401 response usually means the Bunny API rejected the credentials. Double-chec
 2. `BUNNY_LIBRARY_ID` matches the ID of the video library you wish to use.
 3. If uploading to a storage zone, verify `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY`, and `BUNNY_STORAGE_REGION`.
 4. Restart the backend server after updating `.env` so new values are loaded.
+5. Ensure there are no extra spaces or invisible characters around the values in `.env`.
+   Even a trailing space can cause Bunny to reject a request with a 401 error.
 
 
