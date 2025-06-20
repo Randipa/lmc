@@ -4,7 +4,7 @@ This repository contains a Node.js backend and a React frontend.
 
 ## Environment configuration
 
-Create a `backend/.env` file with the required environment variables. You can use `backend/.env.example` as a reference. The backend uses Bunny.net for video uploads, so set `BUNNY_API_KEY` and `BUNNY_LIBRARY_ID` with your credentials in the `.env` file.
+Create a `backend/.env` file with the required environment variables. A sample file is included in this repository with placeholder values, mirroring `backend/.env.example`. Replace each value with your own credentials. The backend uses Bunny.net for video uploads, so set `BUNNY_API_KEY` and `BUNNY_LIBRARY_ID` accordingly in `.env`.
 
 If you want to upload files directly to a Bunny storage zone, also provide `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY` and optionally `BUNNY_STORAGE_REGION`.
 
@@ -36,7 +36,8 @@ A 401 response usually means the Bunny API rejected the credentials. Double-chec
 
 1. `BUNNY_API_KEY` is copied exactly from your Bunny dashboard.
 2. `BUNNY_LIBRARY_ID` matches the ID of the video library you wish to use.
-3. If uploading to a storage zone, verify `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY`, and `BUNNY_STORAGE_REGION`.
-4. Restart the backend server after updating `.env` so new values are loaded.
+3. Make sure the API key is the **Stream API Key** for that library (the Storage key will cause a 401 error).
+4. If uploading to a storage zone, verify `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY`, and `BUNNY_STORAGE_REGION`.
+5. Restart the backend server after updating `.env` so new values are loaded.
 
 
