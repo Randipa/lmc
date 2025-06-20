@@ -28,3 +28,5 @@ node backend/scripts/uploadStorageFile.js /path/to/local/video.mp4
 ```
 
 
+If API credentials are incorrect, video uploads will fail with a **401 Unauthorized** error. Ensure the values you provide are valid for your Bunny account.
+
