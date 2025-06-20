@@ -55,9 +55,12 @@ const ClassDetail = () => {
       const data = res.data.paymentData;
       const form = document.createElement('form');
       form.method = 'POST';
-      form.action = 'https://sandbox.payhere.lk/pay/checkout';
+      form.action = data.sandbox
+        ? 'https://sandbox.payhere.lk/pay/checkout'
+        : 'https://www.payhere.lk/pay/checkout';
 
       Object.entries(data).forEach(([k, v]) => {
+        if (k === 'sandbox') return;
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = k;
@@ -68,7 +71,8 @@ const ClassDetail = () => {
       document.body.appendChild(form);
       form.submit();
     } catch (err) {
-      setMessage('Failed to initiate online payment.');
+      const msg = err.response?.data?.message || 'Failed to initiate online payment.';
+      setMessage(msg);
     }
   };
 
