@@ -30,3 +30,13 @@ node backend/scripts/uploadStorageFile.js /path/to/local/video.mp4
 
 If API credentials are incorrect, video uploads will fail with a **401 Unauthorized** error. Ensure the values you provide are valid for your Bunny account.
 
+### Troubleshooting Bunny authentication
+
+A 401 response usually means the Bunny API rejected the credentials. Double-check the following:
+
+1. `BUNNY_API_KEY` is copied exactly from your Bunny dashboard.
+2. `BUNNY_LIBRARY_ID` matches the ID of the video library you wish to use.
+3. If uploading to a storage zone, verify `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY`, and `BUNNY_STORAGE_REGION`.
+4. Restart the backend server after updating `.env` so new values are loaded.
+
+
