@@ -154,6 +154,41 @@ exports.handlePaymentNotify = async (req, res) => {
       custom_1: userId, custom_2: courseId
     } = req.body;
 
+    const authHeader = req.headers['authorization'];
+    if (authHeader) {
+      try {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (decoded.userRole === 'admin') {
+          if (!order_id || !payment_id || !userId || !courseId) {
+            return res.status(400).json({ message: 'Missing required fields' });
+          }
+
+          await Payment.findOneAndUpdate(
+            { orderId: order_id },
+            {
+              paymentId: payment_id,
+              status: 'completed',
+              completedAt: new Date(),
+              'paymentData.adminApprovedAt': new Date()
+            }
+          );
+
+          await UserCourseAccess.create({
+            userId,
+            courseId,
+            purchasedAt: new Date(),
+            expiresAt: getNext8th()
+          });
+
+          return res.json({ message: 'Payment approved by admin' });
+        }
+      } catch (err) {
+        console.error('Admin override failed:', err.message);
+      }
+    }
+
     const merchantSecret = process.env.PAYHERE_MERCHANT_SECRET;
     const validSig = generatePayHereVerificationHash(
       merchant_id, order_id, payhere_amount,
