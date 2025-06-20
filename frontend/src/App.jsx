@@ -33,6 +33,7 @@ import CourseList from './pages/Admin/CourseList';
 import CreateCourse from './pages/Admin/CreateCourse';
 import PaymentList from './pages/Admin/PaymentList';
 import BankPaymentRequests from './pages/Admin/BankPaymentRequests';
+import BunnyVideoList from './pages/Admin/BunnyVideoList';
 import RequireAdmin from './components/RequireAdmin';
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
         <Route path="/admin/courses/:courseId/upload" element={<RequireAdmin><CourseUploader /></RequireAdmin>} />
         <Route path="/admin/payments" element={<RequireAdmin><PaymentList /></RequireAdmin>} />
         <Route path="/admin/bank-payments" element={<RequireAdmin><BankPaymentRequests /></RequireAdmin>} />
+        <Route path="/admin/videos" element={<RequireAdmin><BunnyVideoList /></RequireAdmin>} />
       </Routes>
     </BrowserRouter>
   );
