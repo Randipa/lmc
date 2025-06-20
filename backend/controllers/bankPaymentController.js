@@ -25,3 +25,21 @@ exports.approveBankPayment = async (req, res) => {
   res.json({ message: 'Payment approved and access granted' });
 };
 
+// Fetch bank payment requests (admin)
+exports.getBankPaymentRequests = async (req, res) => {
+  const status = req.query.status || 'pending';
+  const requests = await BankPaymentRequest.find({ status })
+    .populate('userId', 'firstName lastName')
+    .populate('courseId', 'title');
+  res.json({ requests });
+};
+
+// Fetch current user's bank payment requests
+exports.getMyBankPayments = async (req, res) => {
+  const userId = req.user.userId;
+  const requests = await BankPaymentRequest.find({ userId })
+    .populate('courseId', 'title')
+    .sort({ createdAt: -1 });
+  res.json({ requests });
+};
+
