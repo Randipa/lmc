@@ -12,6 +12,7 @@ const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const bankPaymentRoutes = require('./routes/bankPaymentRoutes');
+const bunnyRoutes = require('./routes/bunnyRoutes');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/bank-payment', bankPaymentRoutes);
 app.use('/api', courseRoutes);
+app.use('/api', bunnyRoutes);
 
 
 
