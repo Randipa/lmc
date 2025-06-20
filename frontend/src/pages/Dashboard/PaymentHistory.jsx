@@ -1,16 +1,22 @@
+import { useEffect, useState } from 'react';
+import api from '../../api';
+
 const PaymentHistory = () => {
-  const payments = [
-    { orderId: 'ORD123', amount: 2500, date: '2025-06-01' },
-    { orderId: 'ORD124', amount: 2500, date: '2025-07-01' }
-  ];
+  const [payments, setPayments] = useState([]);
+
+  useEffect(() => {
+    api.get('/payment/history')
+      .then(res => setPayments(res.data.payments || []))
+      .catch(() => setPayments([]));
+  }, []);
 
   return (
     <div className="container py-4">
       <h4>Payment History</h4>
       <ul className="list-group">
-        {payments.map((p, i) => (
-          <li key={i} className="list-group-item">
-            Order: {p.orderId} – Rs. {p.amount} – {p.date}
+        {payments.map((p) => (
+          <li key={p._id} className="list-group-item">
+            Order: {p.orderId} – Rs. {p.amount} – {new Date(p.createdAt).toLocaleDateString()} – {p.status}
           </li>
         ))}
       </ul>
