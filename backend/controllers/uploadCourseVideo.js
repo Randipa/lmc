@@ -62,7 +62,16 @@ exports.uploadCourseVideo = async (req, res) => {
 
     res.status(200).json({ message: 'Video uploaded and added to course', videoUrl, course });
   } catch (error) {
-    console.error('Upload error:', error.message);
-    res.status(500).json({ message: 'Video upload failed', error: error.message });
+    // If Bunny.net returns an error (e.g. invalid API key) the status code is
+    // available on error.response. Propagate that status code to the client so
+    // the frontend can show a more meaningful message.
+    const status = error.response?.status || 500;
+    const msg =
+      error.response?.data?.message ||
+      error.message ||
+      'Video upload failed';
+
+    console.error('Upload error:', msg);
+    res.status(status).json({ message: msg });
   }
 };
