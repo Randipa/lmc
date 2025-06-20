@@ -5,7 +5,6 @@ const path = require('path');
 
 const BUNNY_API_KEY = process.env.BUNNY_API_KEY;
 const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID;
-const BUNNY_UPLOAD_ZONE = process.env.BUNNY_UPLOAD_ZONE;
 
 // Upload video file to Bunny.net
 exports.uploadCourseVideo = async (req, res) => {
@@ -13,6 +12,12 @@ exports.uploadCourseVideo = async (req, res) => {
     const { title, isPublic, visibleFrom, subtitles } = req.body;
     const courseId = req.params.id;
     const file = req.file;
+
+    if (!BUNNY_API_KEY || !BUNNY_LIBRARY_ID) {
+      return res
+        .status(500)
+        .json({ message: 'Bunny API credentials missing' });
+    }
 
     if (!file) return res.status(400).json({ message: 'Video file is required' });
 
@@ -65,11 +70,15 @@ exports.uploadCourseVideo = async (req, res) => {
     // If Bunny.net returns an error (e.g. invalid API key) the status code is
     // available on error.response. Propagate that status code to the client so
     // the frontend can show a more meaningful message.
-    const status = error.response?.status || 500;
-    const msg =
+    let status = error.response?.status || 500;
+    let msg =
       error.response?.data?.message ||
       error.message ||
       'Video upload failed';
+
+    if (status === 401) {
+      msg = 'Invalid Bunny API credentials';
+    }
 
     console.error('Upload error:', msg);
     res.status(status).json({ message: msg });
