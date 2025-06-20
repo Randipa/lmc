@@ -6,7 +6,7 @@ exports.submitBankPayment = async (req, res) => {
   const userId = req.user.userId;
 
   const existing = await UserCourseAccess.findOne({ userId, courseId, expiresAt: { $gt: new Date() } });
-  if (existing) return res.status(400).json({ message: 'You already have access to this course until 8th.' });
+  if (existing) return res.status(400).json({ message: 'You already have access to this course until the 8th.' });
 
   const request = new BankPaymentRequest({ userId, courseId, zipUrl });
   await request.save();
