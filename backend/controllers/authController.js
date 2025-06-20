@@ -253,7 +253,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// Send OTP via Notify.lk
+// Send OTP via QuickSend
 exports.sendOtp = async (req, res) => {
   try {
     const { phoneNumber } = req.body;
