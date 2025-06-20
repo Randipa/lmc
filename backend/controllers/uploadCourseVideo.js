@@ -13,44 +13,73 @@ exports.uploadCourseVideo = async (req, res) => {
     const courseId = req.params.id;
     const file = req.file;
 
+    console.log('Environment variables check:');
+    console.log('BUNNY_API_KEY:', BUNNY_API_KEY ? 'Present' : 'Missing');
+    console.log('BUNNY_LIBRARY_ID:', BUNNY_LIBRARY_ID ? 'Present' : 'Missing');
+
     if (!BUNNY_API_KEY || !BUNNY_LIBRARY_ID) {
-      return res
-        .status(500)
-        .json({ message: 'Bunny API credentials missing' });
+      console.error('Missing Bunny credentials:', {
+        hasApiKey: !!BUNNY_API_KEY,
+        hasLibraryId: !!BUNNY_LIBRARY_ID
+      });
+      return res.status(500).json({ 
+        message: 'Bunny API credentials missing',
+        details: {
+          hasApiKey: !!BUNNY_API_KEY,
+          hasLibraryId: !!BUNNY_LIBRARY_ID
+        }
+      });
     }
 
     if (!file) return res.status(400).json({ message: 'Video file is required' });
 
+    console.log('Creating video in Bunny library...');
+    
     // 1. Create video in Bunny library
     const createRes = await axios.post(
       `https://video.bunnycdn.com/library/${BUNNY_LIBRARY_ID}/videos`,
       { title },
-      { headers: { AccessKey: BUNNY_API_KEY } }
+      { 
+        headers: { 
+          'AccessKey': BUNNY_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        timeout: 30000 // 30 second timeout
+      }
     );
 
     const videoId = createRes.data.guid;
+    console.log('Video created with ID:', videoId);
 
     // 2. Upload file to Bunny
     const filePath = file.path;
+    const fileStats = fs.statSync(filePath);
+    console.log('Uploading file of size:', fileStats.size, 'bytes');
+
     const uploadRes = await axios.put(
       `https://video.bunnycdn.com/library/${BUNNY_LIBRARY_ID}/videos/${videoId}`,
       fs.readFileSync(filePath),
       {
         headers: {
-          AccessKey: BUNNY_API_KEY,
+          'AccessKey': BUNNY_API_KEY,
           'Content-Type': 'application/octet-stream'
         },
-        // Large video files easily exceed axios' default 10MB body limit
+        timeout: 300000, // 5 minute timeout for large files
         maxContentLength: Infinity,
         maxBodyLength: Infinity
       }
     );
 
-    fs.unlinkSync(filePath); // Clean up local file
+    console.log('Upload response status:', uploadRes.status);
+    
+    // Clean up local file
+    fs.unlinkSync(filePath);
 
     // 3. Save to course
     const course = await Course.findById(courseId);
-    if (!course) return res.status(404).json({ message: 'Course not found' });
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
 
     const videoUrl = `https://iframe.mediadelivery.net/embed/${BUNNY_LIBRARY_ID}/${videoId}`;
     const contentItem = {
@@ -65,22 +94,58 @@ exports.uploadCourseVideo = async (req, res) => {
     course.courseContent.push(contentItem);
     await course.save();
 
-    res.status(200).json({ message: 'Video uploaded and added to course', videoUrl, course });
+    res.status(200).json({ 
+      message: 'Video uploaded and added to course successfully', 
+      videoUrl, 
+      videoId,
+      course: {
+        id: course._id,
+        title: course.title,
+        contentCount: course.courseContent.length
+      }
+    });
   } catch (error) {
-    // If Bunny.net returns an error (e.g. invalid API key) the status code is
-    // available on error.response. Propagate that status code to the client so
-    // the frontend can show a more meaningful message.
-    let status = error.response?.status || 500;
-    let msg =
-      error.response?.data?.message ||
-      error.message ||
-      'Video upload failed';
+    console.error('Upload error details:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers ? Object.keys(error.config.headers) : undefined
+      }
+    });
 
-    if (status === 401) {
-      msg = 'Invalid Bunny API credentials';
+    // Clean up file if it exists
+    if (req.file?.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Error cleaning up file:', cleanupError);
+      }
     }
 
-    console.error('Upload error:', msg);
-    res.status(status).json({ message: msg });
+    let status = 500;
+    let message = 'Video upload failed';
+
+    if (error.response) {
+      status = error.response.status;
+      message = error.response.data?.message || error.response.data || error.message;
+      
+      if (status === 401) {
+        message = 'Invalid Bunny API credentials. Please check your API key.';
+      } else if (status === 404) {
+        message = 'Bunny library not found. Please check your library ID.';
+      }
+    } else if (error.code === 'ENOTFOUND') {
+      message = 'Cannot connect to Bunny.net. Please check your internet connection.';
+    } else if (error.code === 'ETIMEDOUT') {
+      message = 'Upload timeout. Please try again with a smaller file.';
+    }
+
+    res.status(status).json({ 
+      message,
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
