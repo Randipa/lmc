@@ -47,7 +47,9 @@ exports.getMyCourses = async (req, res) => {
   const userId = req.user.userId;
   const accessList = await UserCourseAccess.find({ userId, expiresAt: { $gt: new Date() } }).populate('courseId');
   const courses = accessList.map(access => access.courseId);
-  res.json({ courses });
+  // For the dashboard, the frontend expects the enrolled classes under the
+  // `classes` key. Keep this naming to avoid breaking the existing UI.
+  res.json({ classes: courses });
 };
 
 // Update user role (Admin only)
