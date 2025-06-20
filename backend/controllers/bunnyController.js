@@ -1,7 +1,8 @@
 const axios = require('axios');
 
-const BUNNY_API_KEY = process.env.BUNNY_API_KEY;
-const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID;
+// Trim to prevent stray whitespace from breaking authentication
+const BUNNY_API_KEY = process.env.BUNNY_API_KEY?.trim();
+const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID?.trim();
 
 exports.listVideos = async (req, res) => {
   try {

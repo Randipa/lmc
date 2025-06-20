@@ -3,8 +3,9 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-const BUNNY_API_KEY = process.env.BUNNY_API_KEY;
-const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID;
+// Trim to avoid accidental whitespace causing auth failures
+const BUNNY_API_KEY = process.env.BUNNY_API_KEY?.trim();
+const BUNNY_LIBRARY_ID = process.env.BUNNY_LIBRARY_ID?.trim();
 
 // Upload video file to Bunny.net
 exports.uploadCourseVideo = async (req, res) => {
