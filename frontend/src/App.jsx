@@ -25,6 +25,7 @@ import Marks from './pages/Dashboard/Marks';
 import Attendance from './pages/Dashboard/Attendance';
 import PaymentHistory from './pages/Dashboard/PaymentHistory';
 import ELibrary from './pages/ELibrary/ELibrary';
+import PaymentSuccess from './pages/PaymentSuccess';
 
 // Admin Pages
 import CourseUploader from './pages/Admin/CourseUploader';
@@ -53,6 +54,9 @@ function App() {
         {/* Shop */}
         <Route path="/shop" element={<Shop />} />
         <Route path="/shop/cart" element={<Cart />} />
+
+        {/* Payment return */}
+        <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<MyClasses />} />

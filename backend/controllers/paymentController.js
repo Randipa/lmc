@@ -232,6 +232,23 @@ exports.verifyPayment = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized or payment not found' });
     }
 
+    if (payment.status === 'completed') {
+      const existing = await UserCourseAccess.findOne({
+        userId,
+        courseId: payment.courseId._id,
+        expiresAt: { $gt: new Date() }
+      });
+
+      if (!existing) {
+        await UserCourseAccess.create({
+          userId,
+          courseId: payment.courseId._id,
+          purchasedAt: payment.completedAt || new Date(),
+          expiresAt: getNext8th()
+        });
+      }
+    }
+
     res.json({ success: true, payment });
   } catch (error) {
     console.error('Verify error:', error.message);
