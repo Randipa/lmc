@@ -39,5 +39,6 @@ A 401 response usually means the Bunny API rejected the credentials. Double-chec
 3. Make sure the API key is the **Stream API Key** for that library (the Storage key will cause a 401 error).
 4. If uploading to a storage zone, verify `BUNNY_STORAGE_ZONE_NAME`, `BUNNY_STORAGE_ACCESS_KEY`, and `BUNNY_STORAGE_REGION`.
 5. Restart the backend server after updating `.env` so new values are loaded.
+6. Ensure no extra whitespace or newline characters are present in your `.env` values.
 
 
