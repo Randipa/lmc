@@ -310,3 +310,38 @@ exports.getAllPayments = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch payments' });
   }
 };
+
+// Admin approve payment manually
+exports.adminApprovePayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    if (!orderId) return res.status(400).json({ message: 'Order id required' });
+
+    const payment = await Payment.findOne({ orderId });
+    if (!payment) return res.status(404).json({ message: 'Payment not found' });
+
+    if (payment.status === 'completed') {
+      return res.status(400).json({ message: 'Payment already completed' });
+    }
+
+    payment.status = 'completed';
+    payment.completedAt = new Date();
+    payment.paymentData = {
+      ...(payment.paymentData || {}),
+      adminApprovedAt: new Date()
+    };
+    await payment.save();
+
+    await UserCourseAccess.create({
+      userId: payment.userId,
+      courseId: payment.courseId,
+      purchasedAt: payment.completedAt,
+      expiresAt: getNext8th()
+    });
+
+    res.json({ success: true, payment });
+  } catch (error) {
+    console.error('Admin approve error:', error.message);
+    res.status(500).json({ message: 'Payment approval failed' });
+  }
+};
