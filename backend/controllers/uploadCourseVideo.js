@@ -34,7 +34,10 @@ exports.uploadCourseVideo = async (req, res) => {
         headers: {
           AccessKey: BUNNY_API_KEY,
           'Content-Type': 'application/octet-stream'
-        }
+        },
+        // Large video files easily exceed axios' default 10MB body limit
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
       }
     );
 
