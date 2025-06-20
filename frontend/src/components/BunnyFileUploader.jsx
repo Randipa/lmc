@@ -108,9 +108,18 @@ const BunnyFileUploader = ({ courseId }) => {
         
         switch (err.response.status) {
           case 401:
-            errorMessage = '❌ Authentication failed. Please log in again.';
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            // Distinguish between backend auth failure and Bunny API failure
+            if (
+              err.response.data?.message &&
+              err.response.data.message.toLowerCase().includes('bunny')
+            ) {
+              // Bunny returned 401 (likely invalid API key). Do not logout.
+              errorMessage = `❌ ${err.response.data.message}`;
+            } else {
+              errorMessage = '❌ Authentication failed. Please log in again.';
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+            }
             break;
           case 403:
             errorMessage = '❌ You do not have permission to upload videos.';
