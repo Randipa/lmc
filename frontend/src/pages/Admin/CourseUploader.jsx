@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UploadCourseContent from '../../components/UploadCourseContent';
 import AuthDebug from '../../components/AuthDebug';
+import CourseDetailsForm from '../../components/CourseDetailsForm';
 
 function CourseUploader() {
   const { courseId } = useParams();
@@ -66,6 +67,8 @@ function CourseUploader() {
       </div>
 
       {showDebug && <AuthDebug />}
+
+      <CourseDetailsForm courseId={courseId} />
 
       <UploadCourseContent courseId={courseId} />
       
