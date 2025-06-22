@@ -13,7 +13,10 @@ exports.createTeacher = async (req, res) => {
 
 exports.getTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find().sort({ createdAt: -1 });
+    const query = {};
+    if (req.query.grade) query.grade = parseInt(req.query.grade, 10);
+
+    const teachers = await Teacher.find(query).sort({ createdAt: -1 });
     res.json({ teachers });
   } catch (err) {
     console.error(err);

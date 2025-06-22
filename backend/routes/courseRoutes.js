@@ -9,6 +9,7 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 router.post('/courses', authenticateToken, courseController.createCourse);
 router.get('/courses', courseController.getAllCourses);
 router.get('/courses/stats', courseController.getCourseStats);
+router.get('/courses/available-grades', courseController.getAvailableGrades);
 router.get('/courses/:id', courseController.getCourseById);
 router.put('/courses/:id', authenticateToken, courseController.updateCourse);
 router.delete('/courses/:id', authenticateToken, courseController.deleteCourse);

@@ -178,3 +178,14 @@ exports.getCourseStats = async (req, res) => {
     res.status(500).json({ message: 'Failed to get stats', error: error.message });
   }
 };
+
+// Return distinct grades that have courses
+exports.getAvailableGrades = async (req, res) => {
+  try {
+    const grades = await Course.distinct('grade');
+    res.json({ grades });
+  } catch (error) {
+    console.error('Get grades error:', error);
+    res.status(500).json({ message: 'Failed to fetch grades' });
+  }
+};

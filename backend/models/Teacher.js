@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const teacherSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  grade: { type: Number },
   email: { type: String },
   phoneNumber: { type: String },
   description: { type: String }
