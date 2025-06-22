@@ -27,16 +27,32 @@ const TeacherCourses = () => {
 
   return (
     <div className="container py-4">
-      <h4>{teacher.firstName} {teacher.lastName}</h4>
-      {teacher.description && <p>{teacher.description}</p>}
-      <h5>Courses</h5>
-      <ul className="list-group">
-        {courses.map(c => (
-          <Link key={c._id} to={`/class/${c._id}`} className="list-group-item">
-            {c.title} - Rs. {c.price}
-          </Link>
+      <div className="hero mb-4">
+        <h2 className="mb-2">
+          {teacher.firstName} {teacher.lastName}
+        </h2>
+        {teacher.description && <p className="mb-0">{teacher.description}</p>}
+      </div>
+      <div className="row gy-4">
+        {courses.map((c) => (
+          <div className="col-md-4" key={c._id}>
+            <div className="card h-100 shadow-sm">
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title">{c.title}</h5>
+                {c.description && (
+                  <p className="card-text flex-grow-1">{c.description}</p>
+                )}
+                <div className="mt-auto d-flex justify-content-between align-items-center">
+                  <span className="fw-bold">Rs. {c.price}</span>
+                  <Link to={`/class/${c._id}`} className="btn btn-primary btn-sm">
+                    View
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../api';
+import Tile from '../../components/Tile';
 
 const SubjectList = () => {
   const { gradeId } = useParams();
@@ -15,18 +16,19 @@ const SubjectList = () => {
 
   return (
     <div className="container py-4">
-      <h4>Select a Subject</h4>
-      <ul className="list-group">
+      <div className="hero">
+        <h2 className="mb-0">Select a Subject</h2>
+      </div>
+      <div className="row gy-4">
         {subjects.map((subject) => (
-          <Link
+          <Tile
             key={subject}
-            to={`/classes/${gradeId}/subjects/${encodeURIComponent(subject)}/teachers`}
-            className="list-group-item"
-          >
-            {subject}
-          </Link>
+            title={subject}
+            icon="📘"
+            link={`/classes/${gradeId}/subjects/${encodeURIComponent(subject)}/teachers`}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
