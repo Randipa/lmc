@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 
 function CreateCourse() {
-  const [form, setForm] = useState({ title: '', description: '', price: '', durationInDays: 30 });
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    durationInDays: 30,
+    teacherName: ''
+  });
+  const [teachers, setTeachers] = useState([]);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api
+      .get('/users/role/teacher')
+      .then((res) => setTeachers(res.data))
+      .catch(() => setTeachers([]));
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -59,6 +73,20 @@ function CreateCourse() {
           value={form.durationInDays}
           onChange={handleChange}
         />
+        <select
+          className="form-control mb-2"
+          name="teacherName"
+          value={form.teacherName}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select Teacher</option>
+          {teachers.map((t) => (
+            <option key={t._id} value={`${t.firstName} ${t.lastName}`}>
+              {t.firstName} {t.lastName}
+            </option>
+          ))}
+        </select>
         <button className="btn btn-primary">Create</button>
       </form>
     </div>
