@@ -53,7 +53,7 @@ function CourseUploader() {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h2>🎬 Admin - Add Video URL to Course</h2>
+          <h2>🎬 Admin - Add Video by URL</h2>
           <p className="text-muted">Course ID: {courseId}</p>
           <p className="text-muted">Logged in as: {userInfo.firstName} {userInfo.lastName} ({userInfo.userRole})</p>
         </div>

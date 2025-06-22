@@ -51,22 +51,34 @@ function UploadCourseContent({ courseId }) {
 
   return (
     <div className="mt-5 border p-4 rounded">
-      <h4>📤 Add Bunny.net Video URL</h4>
+      <h4>📤 Add Video by URL</h4>
       {message && <div className="alert alert-info">{message}</div>}
       <form onSubmit={handleSubmit}>
         <input type="text" name="title" value={form.title} onChange={handleChange}
                className="form-control mb-2" placeholder="Video Title" />
         <input type="text" name="videoId" value={form.videoId} onChange={handleChange}
                className="form-control mb-2" placeholder="Bunny Video ID" />
-        <input type="text" name="videoUrl" value={form.videoUrl} onChange={handleChange}
-               className="form-control mb-2" placeholder="Video Embed URL" />
+        <input
+          type="text"
+          name="videoUrl"
+          value={form.videoUrl}
+          onChange={handleChange}
+          className="form-control mb-2"
+          placeholder="Video Embed URL (https://...)"
+        />
         <input type="datetime-local" name="visibleFrom" value={form.visibleFrom} onChange={handleChange}
                className="form-control mb-2" />
         <div className="form-check mb-2">
-          <input className="form-check-input" type="checkbox" name="isPublic"
-                 checked={form.isPublic} onChange={(e) =>
-            setForm({ ...form, isPublic: e.target.checked })} />
-          <label className="form-check-label">Public Video</label>
+          <input
+            className="form-check-input"
+            type="checkbox"
+            name="isPublic"
+            checked={form.isPublic}
+            onChange={(e) => setForm({ ...form, isPublic: e.target.checked })}
+          />
+          <label className="form-check-label">
+            Allow access for unpaid students
+          </label>
         </div>
 
         <h6>📝 Subtitles:</h6>

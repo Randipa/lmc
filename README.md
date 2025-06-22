@@ -10,14 +10,14 @@ If you want to upload files directly to a Bunny storage zone, also provide `BUNN
 
 ### Video upload endpoint
 
-Videos can be attached to a course by sending a Bunny.net video URL to
-`POST /api/courses/:id/content`. The body accepts `title`, `videoId`,
-`videoUrl`, `isPublic` and optional subtitles. The former file upload route
-`POST /api/courses/:id/upload-video` still exists but the admin dashboard now
-uses the URL method.
+Videos must now be attached to a course using a Bunny.net video URL. Submit
+`POST /api/courses/:id/content` with `title`, `videoId`, `videoUrl`, `isPublic`
+and optional subtitles. The `isPublic` flag determines whether a video is free
+for unpaid students or restricted to enrolled users. The older file upload
+endpoint is no longer used by the dashboard.
 
-Both routes require an authenticated request using a Bearer token. Attempting to
-open either endpoint in a browser with a `GET` request will result in
+Requests to `/api/courses/:id/content` must include a valid Bearer token.
+Attempting to open the endpoint in a browser with a `GET` request will result in
 `Cannot GET /api/...`.
 
 ### Uploading files to a storage zone
