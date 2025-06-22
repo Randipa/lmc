@@ -5,11 +5,14 @@ const Home = () => {
 
   return (
     <div className="container py-5">
-      <div className="mb-4">
-        <h2 className="mb-1">Welcome to the Learning Platform</h2>
+      <div className="hero">
+        <h2 className="mb-2">Welcome to the Learning Platform</h2>
         {user && (
-          <p className="text-muted mb-0">Hello, {user.firstName} {user.lastName}</p>
+          <p className="mb-0">Hello, {user.firstName} {user.lastName}</p>
         )}
+      </div>
+      <div className="text-center mb-4">
+        <h4 className="fw-semibold">Quick Access</h4>
       </div>
 
       <div className="row gy-4">

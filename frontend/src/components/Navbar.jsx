@@ -12,16 +12,16 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-custom shadow-sm">
       <div className="container">
-        <Link className="navbar-brand text-white" to="/">SmartBank</Link>
+        <Link className="navbar-brand text-white fw-bold" to="/">SmartBank</Link>
         <div className="ms-auto">
           {user ? (
-            <button className="btn btn-sm btn-light" onClick={handleLogout}>
+            <button className="btn btn-sm btn-light text-primary" onClick={handleLogout}>
               Logout
             </button>
           ) : (
             <>
-              <Link to="/login" className="btn btn-light btn-sm me-2">Login</Link>
-              <Link to="/register" className="btn btn-outline-light btn-sm">Register</Link>
+              <Link to="/login" className="btn btn-light btn-sm me-2 text-primary">Login</Link>
+              <Link to="/register" className="btn btn-outline-light btn-sm text-primary">Register</Link>
             </>
           )}
         </div>
