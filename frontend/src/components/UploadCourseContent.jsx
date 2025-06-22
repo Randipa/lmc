@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import api from '../api';
 
 function UploadCourseContent({ courseId }) {
+  const [contents, setContents] = useState([]);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: '',
     videoId: '',
@@ -11,6 +13,14 @@ function UploadCourseContent({ courseId }) {
     subtitles: [{ language: '', url: '' }]
   });
   const [message, setMessage] = useState('');
+
+  // Load existing course content
+  useEffect(() => {
+    api
+      .get(`/courses/${courseId}`)
+      .then((res) => setContents(res.data.course?.courseContent || []))
+      .catch(() => setContents([]));
+  }, [courseId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,14 +38,14 @@ function UploadCourseContent({ courseId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/courses/${courseId}/content`,
-        form,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMessage('Video metadata uploaded successfully.');
+      if (editingId) {
+        await api.put(`/courses/${courseId}/content/${editingId}`, form);
+        setMessage('Video updated.');
+      } else {
+        await api.post(`/courses/${courseId}/content`, form);
+        setMessage('Video metadata uploaded successfully.');
+      }
       setForm({
         title: '',
         videoId: '',
@@ -44,8 +54,38 @@ function UploadCourseContent({ courseId }) {
         visibleFrom: '',
         subtitles: [{ language: '', url: '' }]
       });
+      setEditingId(null);
+      const res = await api.get(`/courses/${courseId}`);
+      setContents(res.data.course?.courseContent || []);
     } catch (err) {
       setMessage(err.response?.data?.message || 'Upload failed');
+    }
+  };
+
+  const handleEdit = (content) => {
+    setEditingId(content._id);
+    setForm({
+      title: content.title || '',
+      videoId: content.videoId || '',
+      videoUrl: content.videoUrl || '',
+      isPublic: !!content.isPublic,
+      visibleFrom: content.visibleFrom
+        ? new Date(content.visibleFrom).toISOString().slice(0, 16)
+        : '',
+      subtitles: content.subtitles && content.subtitles.length > 0
+        ? content.subtitles.map((s) => ({ language: s.language || '', url: s.url || '' }))
+        : [{ language: '', url: '' }]
+    });
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this video?')) return;
+    try {
+      await api.delete(`/courses/${courseId}/content/${id}`);
+      const res = await api.get(`/courses/${courseId}`);
+      setContents(res.data.course?.courseContent || []);
+    } catch (err) {
+      setMessage('Delete failed');
     }
   };
 
@@ -53,6 +93,23 @@ function UploadCourseContent({ courseId }) {
     <div className="mt-5 border p-4 rounded">
       <h4>📤 Add Video by URL</h4>
       {message && <div className="alert alert-info">{message}</div>}
+      {contents.length > 0 && (
+        <ul className="list-group mb-3">
+          {contents.map((c) => (
+            <li key={c._id} className="list-group-item d-flex justify-content-between align-items-center">
+              <span>{c.title || c.videoId}</span>
+              <div>
+                <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(c)}>
+                  Edit
+                </button>
+                <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(c._id)}>
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
       <form onSubmit={handleSubmit}>
         <input type="text" name="title" value={form.title} onChange={handleChange}
                className="form-control mb-2" placeholder="Video Title" />
