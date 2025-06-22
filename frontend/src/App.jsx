@@ -34,6 +34,9 @@ import CreateCourse from './pages/Admin/CreateCourse';
 import PaymentList from './pages/Admin/PaymentList';
 import BankPaymentRequests from './pages/Admin/BankPaymentRequests';
 import BunnyVideoList from './pages/Admin/BunnyVideoList';
+import TeacherListAdmin from './pages/Admin/TeacherList';
+import CreateTeacher from './pages/Admin/CreateTeacher';
+import EditTeacher from './pages/Admin/EditTeacher';
 import RequireAdmin from './components/RequireAdmin';
 
 function App() {
@@ -80,6 +83,9 @@ function App() {
         <Route path="/admin/payments" element={<RequireAdmin><PaymentList /></RequireAdmin>} />
         <Route path="/admin/bank-payments" element={<RequireAdmin><BankPaymentRequests /></RequireAdmin>} />
         <Route path="/admin/videos" element={<RequireAdmin><BunnyVideoList /></RequireAdmin>} />
+        <Route path="/admin/teachers" element={<RequireAdmin><TeacherListAdmin /></RequireAdmin>} />
+        <Route path="/admin/teachers/create" element={<RequireAdmin><CreateTeacher /></RequireAdmin>} />
+        <Route path="/admin/teachers/:teacherId/edit" element={<RequireAdmin><EditTeacher /></RequireAdmin>} />
       </Routes>
     </BrowserRouter>
   );
