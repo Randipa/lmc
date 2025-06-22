@@ -21,7 +21,7 @@ function CourseList() {
         {courses.map(c => (
           <li key={c._id} className="list-group-item d-flex justify-content-between">
             <span>{c.title}</span>
-            <Link className="btn btn-sm btn-outline-primary" to={`/admin/courses/${c._id}/upload`}>Upload Video</Link>
+            <Link className="btn btn-sm btn-outline-primary" to={`/admin/courses/${c._id}/upload`}>Add Video URL</Link>
           </li>
         ))}
       </ul>
