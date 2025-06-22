@@ -4,7 +4,15 @@ import api from '../../api';
 
 function EditTeacher() {
   const { teacherId } = useParams();
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phoneNumber: '', description: '', grade: '' });
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    description: '',
+    grade: '',
+    subject: ''
+  });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -44,6 +52,14 @@ function EditTeacher() {
             <option key={i + 1} value={i + 1}>Grade {i + 1}</option>
           ))}
         </select>
+        <input
+          className="form-control mb-2"
+          name="subject"
+          placeholder="Subject"
+          value={form.subject}
+          onChange={handleChange}
+          required
+        />
         <textarea className="form-control mb-2" name="description" placeholder="Description" value={form.description} onChange={handleChange} />
         <button className="btn btn-primary">Save</button>
       </form>

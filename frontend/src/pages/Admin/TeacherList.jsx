@@ -32,7 +32,11 @@ function TeacherList() {
       <ul className="list-group">
         {teachers.map(t => (
           <li key={t._id} className="list-group-item d-flex justify-content-between">
-            <span>{t.firstName} {t.lastName} {t.grade ? `(Grade ${t.grade})` : ''}</span>
+            <span>
+              {t.firstName} {t.lastName}
+              {t.grade ? ` (Grade ${t.grade})` : ''}
+              {t.subject ? ` - ${t.subject}` : ''}
+            </span>
             <span>
               <Link className="btn btn-sm btn-outline-primary me-2" to={`/admin/teachers/${t._id}/edit`}>Edit</Link>
               <button className="btn btn-sm btn-outline-danger" onClick={() => deleteTeacher(t._id)}>Delete</button>
