@@ -17,7 +17,7 @@ const GradeList = () => {
       <h4>Choose a Grade</h4>
       <ul className="list-group">
         {grades.map(g => (
-          <Link key={g} to={`/classes/${g}/teachers`} className="list-group-item">
+          <Link key={g} to={`/classes/${g}/subjects`} className="list-group-item">
             Grade {g}
           </Link>
         ))}

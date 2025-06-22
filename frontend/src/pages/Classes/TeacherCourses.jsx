@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../../api';
 
 const TeacherCourses = () => {
-  const { gradeId, teacherId } = useParams();
+  const { gradeId, subjectName, teacherId } = useParams();
   const [teacher, setTeacher] = useState(null);
   const [courses, setCourses] = useState([]);
 
@@ -16,10 +16,12 @@ const TeacherCourses = () => {
   useEffect(() => {
     if (!teacher) return;
     const name = `${teacher.firstName} ${teacher.lastName}`;
-    api.get(`/courses?grade=${gradeId}&teacherName=${encodeURIComponent(name)}`)
+    let url = `/courses?grade=${gradeId}&teacherName=${encodeURIComponent(name)}`;
+    if (subjectName) url += `&subject=${encodeURIComponent(subjectName)}`;
+    api.get(url)
       .then(res => setCourses(res.data.courses || []))
       .catch(() => setCourses([]));
-  }, [gradeId, teacher]);
+  }, [gradeId, subjectName, teacher]);
 
   if (!teacher) return <div className="container py-4">Loading...</div>;
 

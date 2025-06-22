@@ -7,6 +7,7 @@ import Register from './pages/Auth/Register';
 
 // Class Navigation
 import GradeList from './pages/Classes/GradeList';
+import SubjectList from './pages/Classes/SubjectList';
 import TeacherList from './pages/Classes/TeacherList';
 import TeacherCourses from './pages/Classes/TeacherCourses';
 import ClassDetail from './pages/Classes/ClassDetail';
@@ -53,6 +54,9 @@ function App() {
         {/* Classes Flow */}
         <Route path="/classes" element={<GradeList />} />
         <Route path="/classes/all" element={<AllClasses />} />
+        <Route path="/classes/:gradeId/subjects" element={<SubjectList />} />
+        <Route path="/classes/:gradeId/subjects/:subjectName/teachers" element={<TeacherList />} />
+        <Route path="/classes/:gradeId/subjects/:subjectName/teachers/:teacherId" element={<TeacherCourses />} />
         <Route path="/classes/:gradeId/teachers" element={<TeacherList />} />
         <Route path="/classes/:gradeId/teachers/:teacherId" element={<TeacherCourses />} />
         <Route path="/class/:classId" element={<ClassDetail />} />

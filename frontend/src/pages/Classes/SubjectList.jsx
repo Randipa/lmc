@@ -1,25 +1,29 @@
 import { useParams, Link } from 'react-router-dom';
-
-const subjects = [
-  { _id: 'sub-math', name: 'Mathematics' },
-  { _id: 'sub-science', name: 'Science' },
-  { _id: 'sub-english', name: 'English' },
-];
+import { useEffect, useState } from 'react';
+import api from '../../api';
 
 const SubjectList = () => {
   const { gradeId } = useParams();
+  const [subjects, setSubjects] = useState([]);
+
+  useEffect(() => {
+    api
+      .get(`/teachers/available-subjects?grade=${gradeId}`)
+      .then((res) => setSubjects(res.data.subjects || []))
+      .catch(() => setSubjects([]));
+  }, [gradeId]);
 
   return (
     <div className="container py-4">
       <h4>Select a Subject</h4>
       <ul className="list-group">
-        {subjects.map(subject => (
+        {subjects.map((subject) => (
           <Link
-            key={subject._id}
-            to={`/classes/${gradeId}/${subject._id}/teachers`}
+            key={subject}
+            to={`/classes/${gradeId}/subjects/${encodeURIComponent(subject)}/teachers`}
             className="list-group-item"
           >
-            {subject.name}
+            {subject}
           </Link>
         ))}
       </ul>

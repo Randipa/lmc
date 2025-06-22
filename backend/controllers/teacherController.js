@@ -15,6 +15,7 @@ exports.getTeachers = async (req, res) => {
   try {
     const query = {};
     if (req.query.grade) query.grade = parseInt(req.query.grade, 10);
+    if (req.query.subject) query.subject = req.query.subject;
 
     const teachers = await Teacher.find(query).sort({ createdAt: -1 });
     res.json({ teachers });
@@ -54,5 +55,20 @@ exports.deleteTeacher = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to delete teacher' });
+  }
+};
+
+// Get distinct subjects for a given grade
+exports.getAvailableSubjects = async (req, res) => {
+  try {
+    const grade = parseInt(req.query.grade, 10);
+    if (!grade) {
+      return res.status(400).json({ message: 'Grade is required' });
+    }
+    const subjects = await Teacher.find({ grade }).distinct('subject');
+    res.json({ subjects });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch subjects' });
   }
 };
