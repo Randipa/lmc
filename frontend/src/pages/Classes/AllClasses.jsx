@@ -13,14 +13,29 @@ function AllClasses() {
 
   return (
     <div className="container py-4">
-      <h4>All Classes</h4>
-      <ul className="list-group">
-        {classes.map(cls => (
-          <Link key={cls._id} to={`/class/${cls._id}`} className="list-group-item">
-            {cls.title} - Rs. {cls.price}
-          </Link>
+      <div className="hero mb-4">
+        <h2 className="mb-0">All Classes</h2>
+      </div>
+      <div className="row gy-4">
+        {classes.map((cls) => (
+          <div className="col-md-4" key={cls._id}>
+            <div className="card h-100 shadow-sm">
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title">{cls.title}</h5>
+                {cls.description && (
+                  <p className="card-text flex-grow-1">{cls.description}</p>
+                )}
+                <div className="mt-auto d-flex justify-content-between align-items-center">
+                  <span className="fw-bold">Rs. {cls.price}</span>
+                  <Link to={`/class/${cls._id}`} className="btn btn-primary btn-sm">
+                    View
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

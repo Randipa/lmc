@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../../api';
+import Tile from '../../components/Tile';
 
 const GradeList = () => {
   const [grades, setGrades] = useState([]);
@@ -14,14 +14,19 @@ const GradeList = () => {
 
   return (
     <div className="container py-4">
-      <h4>Choose a Grade</h4>
-      <ul className="list-group">
-        {grades.map(g => (
-          <Link key={g} to={`/classes/${g}/subjects`} className="list-group-item">
-            Grade {g}
-          </Link>
+      <div className="hero">
+        <h2 className="mb-0">Choose a Grade</h2>
+      </div>
+      <div className="row gy-4">
+        {grades.map((g) => (
+          <Tile
+            key={g}
+            title={`Grade ${g}`}
+            icon="🎓"
+            link={`/classes/${g}/subjects`}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
