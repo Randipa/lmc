@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 
 // Public Pages
 import Home from './pages/Home';
@@ -43,6 +44,7 @@ import RequireAdmin from './components/RequireAdmin';
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* Auth */}
         <Route path="/login" element={<Login />} />
