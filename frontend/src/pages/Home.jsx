@@ -40,9 +40,10 @@ const Home = () => {
         <Tile title="E-Library" icon="📚" link="/e-library" />
         {user?.userRole === 'admin' && (
           <>
-            <Tile title="Admin" icon="⚙️" link="/admin/courses" />
-            <Tile title="Payments" icon="💳" link="/admin/payments" />
-            <Tile title="Videos" icon="🎞️" link="/admin/videos" />
+          <Tile title="Admin" icon="⚙️" link="/admin/courses" />
+          <Tile title="Payments" icon="💳" link="/admin/payments" />
+          <Tile title="Videos" icon="🎞️" link="/admin/videos" />
+          <Tile title="Teachers" icon="🧑‍🏫" link="/admin/teachers" />
           </>
         )}
       </div>
