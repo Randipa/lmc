@@ -16,8 +16,8 @@ function CreateCourse() {
 
   useEffect(() => {
     api
-      .get('/users/role/teacher')
-      .then((res) => setTeachers(res.data))
+      .get('/teachers')
+      .then((res) => setTeachers(res.data.teachers || []))
       .catch(() => setTeachers([]));
   }, []);
 
