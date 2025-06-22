@@ -8,6 +8,7 @@ function CreateCourse() {
     description: '',
     price: '',
     durationInDays: 30,
+    grade: '',
     teacherName: ''
   });
   const [teachers, setTeachers] = useState([]);
@@ -15,11 +16,15 @@ function CreateCourse() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!form.grade) {
+      setTeachers([]);
+      return;
+    }
     api
-      .get('/teachers')
+      .get(`/teachers?grade=${form.grade}`)
       .then((res) => setTeachers(res.data.teachers || []))
       .catch(() => setTeachers([]));
-  }, []);
+  }, [form.grade]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -73,6 +78,18 @@ function CreateCourse() {
           value={form.durationInDays}
           onChange={handleChange}
         />
+        <select
+          className="form-control mb-2"
+          name="grade"
+          value={form.grade}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select Grade</option>
+          {[...Array(13)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>Grade {i + 1}</option>
+          ))}
+        </select>
         <select
           className="form-control mb-2"
           name="teacherName"

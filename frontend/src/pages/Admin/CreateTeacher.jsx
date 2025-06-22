@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 
 function CreateTeacher() {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phoneNumber: '', description: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phoneNumber: '', description: '', grade: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -31,6 +31,12 @@ function CreateTeacher() {
         <input className="form-control mb-2" name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} required />
         <input className="form-control mb-2" name="email" placeholder="Email" value={form.email} onChange={handleChange} />
         <input className="form-control mb-2" name="phoneNumber" placeholder="Phone" value={form.phoneNumber} onChange={handleChange} />
+        <select className="form-control mb-2" name="grade" value={form.grade} onChange={handleChange} required>
+          <option value="">Select Grade</option>
+          {[...Array(13)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>Grade {i + 1}</option>
+          ))}
+        </select>
         <textarea className="form-control mb-2" name="description" placeholder="Description" value={form.description} onChange={handleChange} />
         <button className="btn btn-primary">Create</button>
       </form>

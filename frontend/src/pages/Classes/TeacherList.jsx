@@ -1,12 +1,17 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-const teachers = [
-  { _id: 't1', name: 'Mr. Perera' },
-  { _id: 't2', name: 'Ms. Silva' },
-];
+import api from '../../api';
 
 const TeacherList = () => {
-  const { gradeId, subjectId } = useParams();
+  const { gradeId } = useParams();
+  const [teachers, setTeachers] = useState([]);
+
+  useEffect(() => {
+    api
+      .get(`/teachers?grade=${gradeId}`)
+      .then(res => setTeachers(res.data.teachers || []))
+      .catch(() => setTeachers([]));
+  }, [gradeId]);
 
   return (
     <div className="container py-4">
@@ -15,10 +20,10 @@ const TeacherList = () => {
         {teachers.map(t => (
           <Link
             key={t._id}
-            to={`/class/${t._id}`}
+            to={`/classes/${gradeId}/teachers/${t._id}`}
             className="list-group-item"
           >
-            {t.name}
+            {t.firstName} {t.lastName}
           </Link>
         ))}
       </ul>

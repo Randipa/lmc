@@ -1,22 +1,29 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../../api';
 
-const grades = [
-  { _id: 'grade-1', name: 'Grade 6' },
-  { _id: 'grade-2', name: 'Grade 7' },
-  { _id: 'grade-3', name: 'Grade 8' },
-];
+const GradeList = () => {
+  const [grades, setGrades] = useState([]);
 
-const GradeList = () => (
-  <div className="container py-4">
-    <h4>Choose a Grade</h4>
-    <ul className="list-group">
-      {grades.map(grade => (
-        <Link key={grade._id} to={`/classes/${grade._id}/subjects`} className="list-group-item">
-          {grade.name}
-        </Link>
-      ))}
-    </ul>
-  </div>
-);
+  useEffect(() => {
+    api
+      .get('/courses/available-grades')
+      .then(res => setGrades(res.data.grades || []))
+      .catch(() => setGrades([]));
+  }, []);
+
+  return (
+    <div className="container py-4">
+      <h4>Choose a Grade</h4>
+      <ul className="list-group">
+        {grades.map(g => (
+          <Link key={g} to={`/classes/${g}/teachers`} className="list-group-item">
+            Grade {g}
+          </Link>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default GradeList;

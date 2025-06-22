@@ -7,8 +7,8 @@ import Register from './pages/Auth/Register';
 
 // Class Navigation
 import GradeList from './pages/Classes/GradeList';
-import SubjectList from './pages/Classes/SubjectList';
 import TeacherList from './pages/Classes/TeacherList';
+import TeacherCourses from './pages/Classes/TeacherCourses';
 import ClassDetail from './pages/Classes/ClassDetail';
 import AllClasses from './pages/Classes/AllClasses';
 
@@ -51,10 +51,10 @@ function App() {
         <Route path="/" element={<Home />} />
 
         {/* Classes Flow */}
-        <Route path="/classes" element={<AllClasses />} />
-        <Route path="/classes/legacy" element={<GradeList />} />
-        <Route path="/classes/:gradeId/subjects" element={<SubjectList />} />
-        <Route path="/classes/:gradeId/:subjectId/teachers" element={<TeacherList />} />
+        <Route path="/classes" element={<GradeList />} />
+        <Route path="/classes/all" element={<AllClasses />} />
+        <Route path="/classes/:gradeId/teachers" element={<TeacherList />} />
+        <Route path="/classes/:gradeId/teachers/:teacherId" element={<TeacherCourses />} />
         <Route path="/class/:classId" element={<ClassDetail />} />
 
         {/* Shop */}
