@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import BunnyFileUploader from '../../components/BunnyFileUploader';
+import UploadCourseContent from '../../components/UploadCourseContent';
 import AuthDebug from '../../components/AuthDebug';
 
 function CourseUploader() {
@@ -53,7 +53,7 @@ function CourseUploader() {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h2>🎬 Admin - Upload Video to Course</h2>
+          <h2>🎬 Admin - Add Video URL to Course</h2>
           <p className="text-muted">Course ID: {courseId}</p>
           <p className="text-muted">Logged in as: {userInfo.firstName} {userInfo.lastName} ({userInfo.userRole})</p>
         </div>
@@ -66,8 +66,8 @@ function CourseUploader() {
       </div>
 
       {showDebug && <AuthDebug />}
-      
-      <BunnyFileUploader courseId={courseId} />
+
+      <UploadCourseContent courseId={courseId} />
       
       <div className="mt-4">
         <button 

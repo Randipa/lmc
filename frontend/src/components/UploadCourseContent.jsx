@@ -51,7 +51,7 @@ function UploadCourseContent({ courseId }) {
 
   return (
     <div className="mt-5 border p-4 rounded">
-      <h4>📤 Upload Course Video Metadata</h4>
+      <h4>📤 Add Bunny.net Video URL</h4>
       {message && <div className="alert alert-info">{message}</div>}
       <form onSubmit={handleSubmit}>
         <input type="text" name="title" value={form.title} onChange={handleChange}
@@ -82,7 +82,7 @@ function UploadCourseContent({ courseId }) {
         ))}
         <button type="button" className="btn btn-secondary mb-3" onClick={addSubtitleField}>+ Add Subtitle</button>
 
-        <button type="submit" className="btn btn-primary w-100">Upload Metadata</button>
+        <button type="submit" className="btn btn-primary w-100">Save Video URL</button>
       </form>
     </div>
   );
