@@ -144,6 +144,53 @@ exports.addCourseContent = async (req, res) => {
   }
 };
 
+// Update a course content item
+exports.updateCourseContent = async (req, res) => {
+  try {
+    const { id, contentId } = req.params;
+    const update = req.body;
+
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    const content = course.courseContent.id(contentId);
+    if (!content) return res.status(404).json({ message: 'Content not found' });
+
+    content.title = update.title ?? content.title;
+    content.videoId = update.videoId ?? content.videoId;
+    content.videoUrl = update.videoUrl ?? content.videoUrl;
+    if (update.isPublic !== undefined) content.isPublic = update.isPublic;
+    if (update.visibleFrom !== undefined)
+      content.visibleFrom = update.visibleFrom ? new Date(update.visibleFrom) : null;
+    if (update.subtitles) content.subtitles = update.subtitles;
+
+    await course.save();
+    res.json({ message: 'Content updated', content });
+  } catch (error) {
+    console.error('Update content error:', error);
+    res.status(500).json({ message: 'Failed to update course content', error: error.message });
+  }
+};
+
+// Delete a course content item
+exports.deleteCourseContent = async (req, res) => {
+  try {
+    const { id, contentId } = req.params;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    const content = course.courseContent.id(contentId);
+    if (!content) return res.status(404).json({ message: 'Content not found' });
+
+    content.deleteOne();
+    await course.save();
+    res.json({ message: 'Content deleted' });
+  } catch (error) {
+    console.error('Delete content error:', error);
+    res.status(500).json({ message: 'Failed to delete course content', error: error.message });
+  }
+};
+
 // Course statistics
 exports.getCourseStats = async (req, res) => {
   try {
