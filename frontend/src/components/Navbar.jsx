@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-custom shadow-sm">
       <div className="container">
-        <Link className="navbar-brand text-white fw-bold" to="/">SmartBank</Link>
+        <Link className="navbar-brand text-white fw-bold" to="/">LMC</Link>
         <div className="ms-auto">
           {user ? (
             <button className="btn btn-sm btn-light text-primary" onClick={handleLogout}>
