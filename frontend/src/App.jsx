@@ -24,6 +24,8 @@ import MyClasses from './pages/Dashboard/MyClasses';
 import LiveClasses from './pages/Dashboard/LiveClasses';
 import Recordings from './pages/Dashboard/Recordings';
 import Assignments from './pages/Dashboard/Assignments';
+import MyRecordings from './pages/Dashboard/MyRecordings';
+import MyAssignments from './pages/Dashboard/MyAssignments';
 import Marks from './pages/Dashboard/Marks';
 import Attendance from './pages/Dashboard/Attendance';
 import PaymentHistory from './pages/Dashboard/PaymentHistory';
@@ -80,6 +82,8 @@ function App() {
         {/* Dashboard */}
         <Route path="/dashboard" element={<StudentDashboard />} />
         <Route path="/dashboard/classes" element={<MyClasses />} />
+        <Route path="/dashboard/recordings" element={<MyRecordings />} />
+        <Route path="/dashboard/assignments" element={<MyAssignments />} />
         <Route path="/dashboard/notices" element={<Notices />} />
         <Route path="/dashboard/live/:classId" element={<LiveClasses />} />
         <Route path="/dashboard/recordings/:classId" element={<Recordings />} />
