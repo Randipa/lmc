@@ -29,6 +29,11 @@ Include regular course fields (`title`, `description`, etc.) and an array
 `courseContent`. Each content item accepts `isPublic` as a toggle: when `true`
 the video is available for free, otherwise it requires enrollment.
 
+The admin dashboard now uses a pair of radio buttons labelled
+"Allow access for unpaid students" and "Restrict to paid students" when
+adding or editing course videos. Subtitle URL inputs are validated to ensure
+they contain a valid `.vtt` link whenever subtitles are enabled.
+
 Requests to `/api/courses/:id/content` must include a valid Bearer token.
 Attempting to open the endpoint in a browser with a `GET` request will result in
 `Cannot GET /api/...`.
