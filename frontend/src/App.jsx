@@ -19,7 +19,6 @@ import Shop from './pages/Shop/Shop';
 import Cart from './pages/Shop/Cart';
 
 // Student Dashboard
-import DashboardHome from './pages/Dashboard/DashboardHome';
 import MyClasses from './pages/Dashboard/MyClasses';
 import LiveClasses from './pages/Dashboard/LiveClasses';
 import Recordings from './pages/Dashboard/Recordings';
@@ -78,8 +77,7 @@ function App() {
         <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* Dashboard */}
-        <Route path="/dashboard" element={<DashboardHome />} />
-        <Route path="/dashboard/classes" element={<MyClasses />} />
+        <Route path="/dashboard" element={<MyClasses />} />
         <Route path="/dashboard/notices" element={<Notices />} />
         <Route path="/dashboard/live/:classId" element={<LiveClasses />} />
         <Route path="/dashboard/recordings/:classId" element={<Recordings />} />
