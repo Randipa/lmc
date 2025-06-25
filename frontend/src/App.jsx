@@ -26,6 +26,7 @@ import Assignments from './pages/Dashboard/Assignments';
 import Marks from './pages/Dashboard/Marks';
 import Attendance from './pages/Dashboard/Attendance';
 import PaymentHistory from './pages/Dashboard/PaymentHistory';
+import Notices from './pages/Dashboard/Notices';
 import ELibrary from './pages/ELibrary/ELibrary';
 import PaymentSuccess from './pages/PaymentSuccess';
 
@@ -74,6 +75,7 @@ function App() {
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<MyClasses />} />
+        <Route path="/dashboard/notices" element={<Notices />} />
         <Route path="/dashboard/live/:classId" element={<LiveClasses />} />
         <Route path="/dashboard/recordings/:classId" element={<Recordings />} />
         <Route path="/dashboard/assignments/:classId" element={<Assignments />} />
