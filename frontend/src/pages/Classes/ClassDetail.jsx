@@ -131,31 +131,39 @@ const ClassDetail = () => {
       <h5>Class Content</h5>
       {classData.courseContent?.length === 0 && <p>No videos available</p>}
 
-      {!hasAccess && classData.courseContent?.length > 0 && (
-        <div className="alert alert-warning">Please purchase this class to watch the videos.</div>
-      )}
+      {!hasAccess &&
+        classData.courseContent?.some(v => !v.videoUrl) && (
+          <div className="alert alert-warning">
+            Please purchase this class to watch the full videos.
+          </div>
+        )}
 
-      {hasAccess &&
-        classData.courseContent?.map((video, index) => {
-          const isVisible = video.isPublic || new Date(video.visibleFrom) <= now;
-          return (
-            <div key={index} className="mb-5 border p-3 rounded">
-              <h6>{video.title}</h6>
-              {!isVisible ? (
-                <p className="text-danger">This video is not yet available.</p>
-              ) : (
-                <div className="ratio ratio-16x9 mb-2">
-                  <iframe
-                    src={video.videoUrl}
-                    title={video.title}
-                    loading="lazy"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              )}
-            </div>
-          );
-        })}
+      {classData.courseContent?.map((video, index) => {
+        const hasVideo = !!video.videoUrl;
+        const isVisible =
+          hasAccess ||
+          video.isPublic ||
+          new Date(video.visibleFrom) <= now;
+        return (
+          <div key={index} className="mb-5 border p-3 rounded">
+            <h6>{video.title}</h6>
+            {!hasVideo ? (
+              <p className="text-muted">Please purchase this class to watch this video.</p>
+            ) : !isVisible ? (
+              <p className="text-danger">This video is not yet available.</p>
+            ) : (
+              <div className="ratio ratio-16x9 mb-2">
+                <iframe
+                  src={video.videoUrl}
+                  title={video.title}
+                  loading="lazy"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
