@@ -53,6 +53,7 @@ const courseSchema = new mongoose.Schema({
       subtitles: [
         {
           language: String,
+          filename: String,
           url: String
         }
       ]

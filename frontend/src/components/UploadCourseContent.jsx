@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 
-function UploadCourseContent({ courseId }) {
+function UploadCourseContent({ courseId, onUpload, initialIsPublic = false }) {
   const [contents, setContents] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: '',
     videoId: '',
     videoUrl: '',
-    isPublic: false,
+    isPublic: initialIsPublic,
     visibleFrom: '',
     subtitles: [{ language: '', url: '' }]
   });
   const [showSubtitles, setShowSubtitles] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    setForm((f) => ({ ...f, isPublic: initialIsPublic }));
+  }, [initialIsPublic]);
 
   const isValidUrl = (value) => {
     try {
@@ -61,14 +65,16 @@ function UploadCourseContent({ courseId }) {
         await api.put(`/courses/${courseId}/content/${editingId}`, form);
         setMessage('Video updated.');
       } else {
-        await api.post(`/courses/${courseId}/content`, form);
+        const res = await api.post(`/courses/${courseId}/content`, form);
         setMessage('Video metadata uploaded successfully.');
+        const newItem = res.data.course.courseContent[res.data.course.courseContent.length - 1];
+        if (onUpload) onUpload(newItem);
       }
       setForm({
         title: '',
         videoId: '',
         videoUrl: '',
-        isPublic: false,
+        isPublic: initialIsPublic,
         visibleFrom: '',
         subtitles: [{ language: '', url: '' }]
       });
