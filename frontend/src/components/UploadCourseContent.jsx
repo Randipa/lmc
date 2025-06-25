@@ -12,6 +12,7 @@ function UploadCourseContent({ courseId }) {
     visibleFrom: '',
     subtitles: [{ language: '', url: '' }]
   });
+  const [showSubtitles, setShowSubtitles] = useState(false);
   const [message, setMessage] = useState('');
 
   // Load existing course content
@@ -89,6 +90,16 @@ function UploadCourseContent({ courseId }) {
     }
   };
 
+  const handleTogglePublic = async (id, current) => {
+    try {
+      await api.put(`/courses/${courseId}/content/${id}`, { isPublic: !current });
+      const res = await api.get(`/courses/${courseId}`);
+      setContents(res.data.course?.courseContent || []);
+    } catch (err) {
+      setMessage('Update failed');
+    }
+  };
+
   return (
     <div className="mt-5 border p-4 rounded">
       <h4>📤 Add Video by URL</h4>
@@ -98,7 +109,16 @@ function UploadCourseContent({ courseId }) {
           {contents.map((c) => (
             <li key={c._id} className="list-group-item d-flex justify-content-between align-items-center">
               <span>{c.title || c.videoId}</span>
-              <div>
+              <div className="d-flex align-items-center">
+                <div className="form-check form-switch me-2">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    checked={c.isPublic}
+                    onChange={() => handleTogglePublic(c._id, c.isPublic)}
+                  />
+                </div>
                 <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(c)}>
                   Edit
                 </button>
@@ -138,18 +158,53 @@ function UploadCourseContent({ courseId }) {
           </label>
         </div>
 
-        <h6>📝 Subtitles:</h6>
-        {form.subtitles.map((sub, idx) => (
-          <div className="mb-2" key={idx}>
-            <input type="text" placeholder="Language" className="form-control mb-1"
-                   value={sub.language}
-                   onChange={(e) => handleSubtitleChange(idx, 'language', e.target.value)} />
-            <input type="text" placeholder="Subtitle URL (.vtt)" className="form-control"
-                   value={sub.url}
-                   onChange={(e) => handleSubtitleChange(idx, 'url', e.target.value)} />
-          </div>
-        ))}
-        <button type="button" className="btn btn-secondary mb-3" onClick={addSubtitleField}>+ Add Subtitle</button>
+        <div className="form-check form-switch mb-2">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="toggleSubtitles"
+            checked={showSubtitles}
+            onChange={(e) => setShowSubtitles(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="toggleSubtitles">
+            Show Subtitles
+          </label>
+        </div>
+
+        {showSubtitles && (
+          <>
+            <h6>📝 Subtitles:</h6>
+            {form.subtitles.map((sub, idx) => (
+              <div className="mb-2" key={idx}>
+                <input
+                  type="text"
+                  placeholder="Language"
+                  className="form-control mb-1"
+                  value={sub.language}
+                  onChange={(e) =>
+                    handleSubtitleChange(idx, 'language', e.target.value)
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Subtitle URL (.vtt)"
+                  className="form-control"
+                  value={sub.url}
+                  onChange={(e) =>
+                    handleSubtitleChange(idx, 'url', e.target.value)
+                  }
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn btn-secondary mb-3"
+              onClick={addSubtitleField}
+            >
+              + Add Subtitle
+            </button>
+          </>
+        )}
 
         <button type="submit" className="btn btn-primary w-100">Save Video URL</button>
       </form>
