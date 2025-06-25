@@ -20,6 +20,8 @@ const StudentDashboard = () => {
       <div className="row gy-4 dashboard-tiles">
         <Tile title="My Classes" icon="📚" link="/dashboard/classes" />
         <Tile title="Payment History" icon="💳" link="/dashboard/payments" />
+        <Tile title="Recordings" icon="🎥" link="/dashboard/recordings" />
+        <Tile title="Assignments" icon="📝" link="/dashboard/assignments" />
         <Tile title="Attendance" icon="✅" link="/dashboard/attendance" />
         <Tile title="Notices" icon="📢" link="/dashboard/notices" />
       </div>
