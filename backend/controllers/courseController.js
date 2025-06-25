@@ -88,8 +88,8 @@ exports.getCourseById = async (req, res) => {
 
     const courseObj = course.toObject();
     if (!hasAccess) {
-      courseObj.courseContent = courseObj.courseContent.map((c, idx) => {
-        if (idx === 0 || c.isPublic) {
+      courseObj.courseContent = courseObj.courseContent.map((c) => {
+        if (c.isPublic) {
           return {
             title: c.title,
             videoId: c.videoId,
