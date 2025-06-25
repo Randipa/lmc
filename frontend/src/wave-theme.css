@@ -48,7 +48,3 @@ body {
   margin-bottom: 2rem;
 }
 
-
-.dashboard-card { border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s; }
-.dashboard-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-
