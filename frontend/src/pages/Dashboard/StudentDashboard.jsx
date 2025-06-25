@@ -18,10 +18,10 @@ const StudentDashboard = () => {
       </div>
 
       <div className="row gy-4 dashboard-tiles">
-        <Tile title="My Classes" icon="\uD83D\uDCDA" link="/dashboard/classes" />
-        <Tile title="Payment History" icon="\uD83D\uDCB3" link="/dashboard/payments" />
-        <Tile title="Attendance" icon="\u2705" link="/dashboard/attendance" />
-        <Tile title="Notices" icon="\uD83D\uDCE2" link="/dashboard/notices" />
+        <Tile title="My Classes" icon="📚" link="/dashboard/classes" />
+        <Tile title="Payment History" icon="💳" link="/dashboard/payments" />
+        <Tile title="Attendance" icon="✅" link="/dashboard/attendance" />
+        <Tile title="Notices" icon="📢" link="/dashboard/notices" />
       </div>
     </div>
   );
