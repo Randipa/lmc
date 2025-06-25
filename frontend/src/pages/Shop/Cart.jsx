@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import api from '../../api';
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -9,12 +10,34 @@ const Cart = () => {
     if (cart) setItems(JSON.parse(cart));
   }, []);
 
-  const total = items.reduce((sum, item) => sum + item.price, 0);
+  const total = items.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
 
-  const handleCheckout = () => {
-    // Example PayHere form submission logic (same as Step 4)
-    alert(`Redirecting to PayHere for Rs. ${total}`);
-    // You could send items to backend and get a PayHere session
+  const handleCheckout = async () => {
+    try {
+      const payload = items.map((i) => ({ productId: i._id, qty: i.qty || 1 }));
+      const res = await api.post('/shop/checkout', { items: payload });
+      const data = res.data.paymentData;
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = data.sandbox
+        ? 'https://sandbox.payhere.lk/pay/checkout'
+        : 'https://www.payhere.lk/pay/checkout';
+
+      for (const key in data) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+      form.remove();
+    } catch (err) {
+      setMsg('Checkout failed');
+    }
   };
 
   const clearCart = () => {
@@ -32,8 +55,8 @@ const Cart = () => {
           <ul className="list-group mb-3">
             {items.map((item, idx) => (
               <li key={idx} className="list-group-item d-flex justify-content-between">
-                {item.name}
-                <span>Rs. {item.price}</span>
+                {item.name} x {item.qty || 1}
+                <span>Rs. {item.price * (item.qty || 1)}</span>
               </li>
             ))}
           </ul>
