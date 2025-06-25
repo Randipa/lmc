@@ -16,6 +16,7 @@ const bankPaymentRoutes = require('./routes/bankPaymentRoutes');
 const bunnyRoutes = require('./routes/bunnyRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api', courseRoutes);
 app.use('/api', bunnyRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/notices', noticeRoutes);
+app.use('/api', productRoutes);
 
 // Connect to MongoDB (removed deprecated options)
 mongoose.connect(process.env.MONGO_URI)
