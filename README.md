@@ -34,9 +34,6 @@ The admin dashboard now uses a pair of radio buttons labelled
 adding or editing course videos. Subtitle URL inputs are validated to ensure
 they contain a valid `.vtt` link whenever subtitles are enabled.
 
-Students who are not enrolled will only see videos and subtitles when the
-"Allow access for unpaid students" option is selected on that content item.
-
 Requests to `/api/courses/:id/content` must include a valid Bearer token.
 Attempting to open the endpoint in a browser with a `GET` request will result in
 `Cannot GET /api/...`.
