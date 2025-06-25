@@ -146,6 +146,55 @@ exports.updateCourse = async (req, res) => {
   }
 };
 
+// Update an entire course including its content array
+exports.updateFullCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      description,
+      price,
+      durationInDays,
+      type,
+      grade,
+      subject,
+      teacherName,
+      courseContent
+    } = req.body;
+
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    if (title !== undefined) course.title = title;
+    if (description !== undefined) course.description = description;
+    if (price !== undefined) course.price = parseFloat(price);
+    if (durationInDays !== undefined) course.durationInDays = durationInDays;
+    if (type !== undefined) course.type = type;
+    if (grade !== undefined) course.grade = grade;
+    if (subject !== undefined) course.subject = subject;
+    if (teacherName !== undefined) course.teacherName = teacherName;
+
+    if (Array.isArray(courseContent)) {
+      course.courseContent = courseContent.map((c) => ({
+        title: c.title,
+        videoId: c.videoId,
+        videoUrl: c.videoUrl,
+        isPublic: !!c.isPublic,
+        visibleFrom: c.visibleFrom ? new Date(c.visibleFrom) : null,
+        subtitles: Array.isArray(c.subtitles)
+          ? c.subtitles.map((s) => ({ language: s.language, url: s.url }))
+          : []
+      }));
+    }
+
+    await course.save();
+    res.json({ message: 'Course updated successfully', course });
+  } catch (error) {
+    console.error('Update full course error:', error);
+    res.status(500).json({ message: 'Update failed', error: error.message });
+  }
+};
+
 // Delete course
 exports.deleteCourse = async (req, res) => {
   try {
