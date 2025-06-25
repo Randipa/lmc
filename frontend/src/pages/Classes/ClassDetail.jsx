@@ -140,10 +140,8 @@ const ClassDetail = () => {
 
       {classData.courseContent?.map((video, index) => {
         const hasVideo = !!video.videoUrl;
-        const isVisible =
-          hasAccess ||
-          video.isPublic ||
-          new Date(video.visibleFrom) <= now;
+        const released = !video.visibleFrom || new Date(video.visibleFrom) <= now;
+        const isVisible = hasAccess ? released : video.isPublic && released;
         return (
           <div key={index} className="mb-5 border p-3 rounded">
             <h6>{video.title}</h6>

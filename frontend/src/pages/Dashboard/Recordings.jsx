@@ -32,8 +32,10 @@ function Recordings() {
       {course.courseContent?.length === 0 && <p>No videos available</p>}
 
       {course.courseContent?.map((video, index) => {
-        const isVisible =
-          hasAccess || video.isPublic || new Date(video.visibleFrom) <= now;
+        const released = !video.visibleFrom || new Date(video.visibleFrom) <= now;
+        const isVisible = hasAccess
+          ? released
+          : video.isPublic && released;
 
         return (
           <div key={index} className="mb-5 border p-3 rounded">

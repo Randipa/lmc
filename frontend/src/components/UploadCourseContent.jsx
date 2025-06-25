@@ -10,9 +10,15 @@ function UploadCourseContent({ courseId }) {
     videoUrl: '',
     isPublic: false,
     visibleFrom: '',
-    subtitles: [{ language: '', url: '' }]
+    subtitles: []
   });
   const [showSubtitles, setShowSubtitles] = useState(false);
+  const [selectedSubtitle, setSelectedSubtitle] = useState('');
+  const [subtitleUrls, setSubtitleUrls] = useState({
+    english: '',
+    sinhala: '',
+    tamil: ''
+  });
   const [message, setMessage] = useState('');
 
   const isValidUrl = (value) => {
@@ -36,30 +42,33 @@ function UploadCourseContent({ courseId }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubtitleChange = (index, field, value) => {
-    const updated = [...form.subtitles];
-    updated[index][field] = value;
-    setForm({ ...form, subtitles: updated });
-  };
 
-  const addSubtitleField = () => {
-    setForm({ ...form, subtitles: [...form.subtitles, { language: '', url: '' }] });
+  const handleSubtitleUrlChange = (lang, value) => {
+    setSubtitleUrls({ ...subtitleUrls, [lang]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (showSubtitles) {
-        for (const sub of form.subtitles) {
-          if (!sub.language || !sub.url) {
-            setMessage('Subtitle language and URL are required');
-            return;
-          }
-          if (!isValidUrl(sub.url) || !sub.url.endsWith('.vtt')) {
-            setMessage('Subtitle URL must be a valid link ending with .vtt');
-            return;
-          }
+        if (!selectedSubtitle) {
+          setMessage('Please select a subtitle language');
+          return;
         }
+        const url = subtitleUrls[selectedSubtitle];
+        if (!url) {
+          setMessage('Subtitle URL is required');
+          return;
+        }
+        if (!isValidUrl(url) || !url.endsWith('.vtt')) {
+          setMessage('Subtitle URL must be a valid link ending with .vtt');
+          return;
+        }
+        form.subtitles = [
+          { language: selectedSubtitle, url }
+        ];
+      } else {
+        form.subtitles = [];
       }
       if (editingId) {
         await api.put(`/courses/${courseId}/content/${editingId}`, form);
@@ -74,8 +83,11 @@ function UploadCourseContent({ courseId }) {
         videoUrl: '',
         isPublic: false,
         visibleFrom: '',
-        subtitles: [{ language: '', url: '' }]
+        subtitles: []
       });
+      setSelectedSubtitle('');
+      setSubtitleUrls({ english: '', sinhala: '', tamil: '' });
+      setShowSubtitles(false);
       setEditingId(null);
       const res = await api.get(`/courses/${courseId}`);
       setContents(res.data.course?.courseContent || []);
@@ -94,10 +106,21 @@ function UploadCourseContent({ courseId }) {
       visibleFrom: content.visibleFrom
         ? new Date(content.visibleFrom).toISOString().slice(0, 16)
         : '',
-      subtitles: content.subtitles && content.subtitles.length > 0
-        ? content.subtitles.map((s) => ({ language: s.language || '', url: s.url || '' }))
-        : [{ language: '', url: '' }]
+      subtitles: content.subtitles && content.subtitles.length > 0 ? content.subtitles : []
     });
+    if (content.subtitles && content.subtitles.length > 0) {
+      setShowSubtitles(true);
+      setSelectedSubtitle(content.subtitles[0].language || '');
+      setSubtitleUrls({
+        english: content.subtitles[0].language === 'english' ? content.subtitles[0].url : '',
+        sinhala: content.subtitles[0].language === 'sinhala' ? content.subtitles[0].url : '',
+        tamil: content.subtitles[0].language === 'tamil' ? content.subtitles[0].url : ''
+      });
+    } else {
+      setShowSubtitles(false);
+      setSelectedSubtitle('');
+      setSubtitleUrls({ english: '', sinhala: '', tamil: '' });
+    }
   };
 
   const handleDelete = async (id) => {
@@ -211,35 +234,29 @@ function UploadCourseContent({ courseId }) {
         {showSubtitles && (
           <>
             <h6>📝 Subtitles:</h6>
-            {form.subtitles.map((sub, idx) => (
-              <div className="mb-2" key={idx}>
+            {['english', 'sinhala', 'tamil'].map((lang) => (
+              <div className="mb-2 form-check" key={lang}>
                 <input
-                  type="text"
-                  placeholder="Language"
-                  className="form-control mb-1"
-                  value={sub.language}
-                  onChange={(e) =>
-                    handleSubtitleChange(idx, 'language', e.target.value)
-                  }
+                  className="form-check-input"
+                  type="radio"
+                  name="subtitleLang"
+                  id={`lang-${lang}`}
+                  value={lang}
+                  checked={selectedSubtitle === lang}
+                  onChange={() => setSelectedSubtitle(lang)}
                 />
+                <label className="form-check-label me-2" htmlFor={`lang-${lang}`}>
+                  {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                </label>
                 <input
                   type="text"
+                  className="form-control d-inline-block w-auto ms-2"
                   placeholder="Subtitle URL (.vtt)"
-                  className="form-control"
-                  value={sub.url}
-                  onChange={(e) =>
-                    handleSubtitleChange(idx, 'url', e.target.value)
-                  }
+                  value={subtitleUrls[lang]}
+                  onChange={(e) => handleSubtitleUrlChange(lang, e.target.value)}
                 />
               </div>
             ))}
-            <button
-              type="button"
-              className="btn btn-secondary mb-3"
-              onClick={addSubtitleField}
-            >
-              + Add Subtitle
-            </button>
           </>
         )}
 

@@ -31,8 +31,10 @@ the video is available for free, otherwise it requires enrollment.
 
 The admin dashboard now uses a pair of radio buttons labelled
 "Allow access for unpaid students" and "Restrict to paid students" when
-adding or editing course videos. Subtitle URL inputs are validated to ensure
-they contain a valid `.vtt` link whenever subtitles are enabled.
+adding or editing course videos. When subtitles are enabled, the admin selects
+one language from a set of radio options (English, Sinhala or Tamil). The
+corresponding subtitle URL field becomes mandatory and must link to a valid
+`.vtt` file.
 
 Students who are not enrolled will only see videos and subtitles when the
 "Allow access for unpaid students" option is selected on that content item.

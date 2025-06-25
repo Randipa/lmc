@@ -90,9 +90,8 @@ exports.getCourseById = async (req, res) => {
     if (!hasAccess) {
       const now = new Date();
       courseObj.courseContent = courseObj.courseContent.map((c) => {
-        const isAvailable =
-          c.isPublic || (c.visibleFrom && new Date(c.visibleFrom) <= now);
-        if (isAvailable) {
+        const released = !c.visibleFrom || new Date(c.visibleFrom) <= now;
+        if (c.isPublic && released) {
           return {
             title: c.title,
             videoUrl: c.videoUrl,
