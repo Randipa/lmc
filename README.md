@@ -16,6 +16,19 @@ and optional subtitles. The `isPublic` flag determines whether a video is free
 for unpaid students or restricted to enrolled users. The older file upload
 endpoint is no longer used by the dashboard.
 
+### Updating full course details
+
+Admins can replace all information and video metadata for a course in a single
+request using:
+
+```
+PUT /api/courses/:id/full
+```
+
+Include regular course fields (`title`, `description`, etc.) and an array
+`courseContent`. Each content item accepts `isPublic` as a toggle: when `true`
+the video is available for free, otherwise it requires enrollment.
+
 Requests to `/api/courses/:id/content` must include a valid Bearer token.
 Attempting to open the endpoint in a browser with a `GET` request will result in
 `Cannot GET /api/...`.
