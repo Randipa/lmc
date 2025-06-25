@@ -26,6 +26,7 @@ const Home = () => {
           <Tile title="Payments" icon="💳" link="/admin/payments" />
           <Tile title="Videos" icon="🎞️" link="/admin/videos" />
           <Tile title="Teachers" icon="🧑‍🏫" link="/admin/teachers" />
+          <Tile title="Notices" icon="📢" link="/admin/notices" />
           </>
         )}
       </div>

@@ -39,6 +39,8 @@ import BunnyVideoList from './pages/Admin/BunnyVideoList';
 import TeacherListAdmin from './pages/Admin/TeacherList';
 import CreateTeacher from './pages/Admin/CreateTeacher';
 import EditTeacher from './pages/Admin/EditTeacher';
+import NoticeList from './pages/Admin/NoticeList';
+import CreateNotice from './pages/Admin/CreateNotice';
 import RequireAdmin from './components/RequireAdmin';
 
 function App() {
@@ -92,6 +94,8 @@ function App() {
         <Route path="/admin/teachers" element={<RequireAdmin><TeacherListAdmin /></RequireAdmin>} />
         <Route path="/admin/teachers/create" element={<RequireAdmin><CreateTeacher /></RequireAdmin>} />
         <Route path="/admin/teachers/:teacherId/edit" element={<RequireAdmin><EditTeacher /></RequireAdmin>} />
+        <Route path="/admin/notices" element={<RequireAdmin><NoticeList /></RequireAdmin>} />
+        <Route path="/admin/notices/create" element={<RequireAdmin><CreateNotice /></RequireAdmin>} />
       </Routes>
     </BrowserRouter>
   );
