@@ -64,4 +64,8 @@ A 401 response usually means the Bunny API rejected the credentials. Double-chec
 5. Restart the backend server after updating `.env` so new values are loaded.
 6. Ensure no extra whitespace or newline characters are present in your `.env` values.
 
+### Dashboard redesign
+
+The student dashboard available at `/dashboard` now features a cleaner layout. It displays quick links to classes, notices, attendance and payment history along with cards for each enrolled course.
+
 
