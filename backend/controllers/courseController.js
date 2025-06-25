@@ -88,19 +88,9 @@ exports.getCourseById = async (req, res) => {
 
     const courseObj = course.toObject();
     if (!hasAccess) {
-      courseObj.courseContent = courseObj.courseContent.map((c) => {
-        if (c.isPublic) {
-          return {
-            title: c.title,
-            videoId: c.videoId,
-            videoUrl: c.videoUrl,
-            isPublic: c.isPublic,
-            visibleFrom: c.visibleFrom,
-            subtitles: c.subtitles
-          };
-        }
-        return { title: c.title };
-      });
+      courseObj.courseContent = courseObj.courseContent.map((c) => ({
+        title: c.title,
+      }));
     }
 
     res.json({ message: 'Course retrieved successfully', course: courseObj, hasAccess });
