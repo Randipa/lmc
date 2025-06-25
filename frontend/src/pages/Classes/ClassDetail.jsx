@@ -138,7 +138,10 @@ const ClassDetail = () => {
           </div>
         )}
 
-      {classData.courseContent?.map((video, index) => {
+      {(hasAccess
+        ? classData.courseContent
+        : classData.courseContent?.filter(v => v.videoUrl)
+      )?.map((video, index) => {
         const hasVideo = !!video.videoUrl;
         const isVisible =
           hasAccess ||
