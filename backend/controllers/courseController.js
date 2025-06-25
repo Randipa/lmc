@@ -209,10 +209,37 @@ exports.deleteCourse = async (req, res) => {
   }
 };
 
+// Retrieve only course content
+exports.getCourseContent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id, 'courseContent title');
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    const paidContent = course.courseContent.filter(c => !c.isPublic);
+    const unpaidContent = course.courseContent.filter(c => c.isPublic);
+    const subtitles = course.courseContent.flatMap(c =>
+      c.subtitles.map(s => ({
+        id: s._id,
+        videoId: c.videoId,
+        videoTitle: c.title,
+        language: s.language,
+        filename: s.filename,
+        url: s.url
+      }))
+    );
+
+    res.json({ paidContent, unpaidContent, subtitles });
+  } catch (error) {
+    console.error('Get content error:', error);
+    res.status(500).json({ message: 'Failed to get course content', error: error.message });
+  }
+};
+
 // Add Bunny.net video to a course
 exports.addCourseContent = async (req, res) => {
   try {
-    const { title, videoId, videoUrl, isPublic, visibleFrom, subtitles } = req.body;
+    const { title, videoId, videoUrl, isPublic, visibleFrom, subtitles, contentType, description, duration } = req.body;
     const courseId = req.params.id;
 
     const course = await Course.findById(courseId);
@@ -222,7 +249,9 @@ exports.addCourseContent = async (req, res) => {
       title,
       videoId,
       videoUrl,
-      isPublic,
+      description,
+      duration,
+      isPublic: typeof isPublic === 'boolean' ? isPublic : contentType === 'unpaid',
       visibleFrom,
       subtitles
     });
@@ -279,6 +308,63 @@ exports.deleteCourseContent = async (req, res) => {
   } catch (error) {
     console.error('Delete content error:', error);
     res.status(500).json({ message: 'Failed to delete course content', error: error.message });
+  }
+};
+
+// Upload subtitle file and attach to a video
+exports.uploadSubtitle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { videoId, language } = req.body;
+    const file = req.file;
+    if (!file) return res.status(400).json({ message: 'Subtitle file required' });
+
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    const content = course.courseContent.find(c => c.videoId === videoId || c._id.toString() === videoId);
+    if (!content) return res.status(404).json({ message: 'Video not found' });
+
+    const subtitle = {
+      language,
+      filename: file.originalname,
+      url: `/uploads/subtitles/${file.filename}`
+    };
+
+    content.subtitles.push(subtitle);
+    await course.save();
+
+    res.json(content.subtitles[content.subtitles.length - 1]);
+  } catch (error) {
+    console.error('Upload subtitle error:', error);
+    res.status(500).json({ message: 'Failed to upload subtitle', error: error.message });
+  }
+};
+
+// Delete subtitle
+exports.deleteSubtitle = async (req, res) => {
+  try {
+    const { id, subtitleId } = req.params;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: 'Course not found' });
+
+    let removed = false;
+    for (const content of course.courseContent) {
+      const sub = content.subtitles.id(subtitleId);
+      if (sub) {
+        sub.deleteOne();
+        removed = true;
+        break;
+      }
+    }
+
+    if (!removed) return res.status(404).json({ message: 'Subtitle not found' });
+
+    await course.save();
+    res.json({ message: 'Subtitle deleted' });
+  } catch (error) {
+    console.error('Delete subtitle error:', error);
+    res.status(500).json({ message: 'Failed to delete subtitle', error: error.message });
   }
 };
 

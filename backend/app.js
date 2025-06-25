@@ -21,6 +21,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Session Middleware (required if using session in payment flow)
 app.use(
   session({
