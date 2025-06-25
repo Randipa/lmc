@@ -6,6 +6,7 @@ function Recordings() {
   const { classId } = useParams();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
   const [now] = useState(new Date());
 
   useEffect(() => {
@@ -15,6 +16,7 @@ function Recordings() {
     })
     .then(res => {
       setCourse(res.data.course);
+      setHasAccess(res.data.hasAccess || false);
       setLoading(false);
     })
     .catch(() => setLoading(false));
@@ -30,7 +32,8 @@ function Recordings() {
       {course.courseContent?.length === 0 && <p>No videos available</p>}
 
       {course.courseContent?.map((video, index) => {
-        const isVisible = video.isPublic || new Date(video.visibleFrom) <= now;
+        const isVisible =
+          hasAccess || video.isPublic || new Date(video.visibleFrom) <= now;
 
         return (
           <div key={index} className="mb-5 border p-3 rounded">
