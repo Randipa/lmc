@@ -51,12 +51,8 @@ function UploadCourseContent({ courseId }) {
     try {
       if (showSubtitles) {
         for (const sub of form.subtitles) {
-          if (!sub.language || !sub.url) {
-            setMessage('Subtitle language and URL are required');
-            return;
-          }
-          if (!isValidUrl(sub.url) || !sub.url.endsWith('.vtt')) {
-            setMessage('Subtitle URL must be a valid link ending with .vtt');
+          if (sub.url && !isValidUrl(sub.url)) {
+            setMessage('Subtitle URL must be a valid link');
             return;
           }
         }
@@ -166,33 +162,18 @@ function UploadCourseContent({ courseId }) {
         />
         <input type="datetime-local" name="visibleFrom" value={form.visibleFrom} onChange={handleChange}
                className="form-control mb-2" />
-        <div className="mb-2">
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="isPublic"
-              id="isPublicYes"
-              checked={form.isPublic}
-              onChange={() => setForm({ ...form, isPublic: true })}
-            />
-            <label className="form-check-label" htmlFor="isPublicYes">
-              Allow access for unpaid students
-            </label>
-          </div>
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="isPublic"
-              id="isPublicNo"
-              checked={!form.isPublic}
-              onChange={() => setForm({ ...form, isPublic: false })}
-            />
-            <label className="form-check-label" htmlFor="isPublicNo">
-              Restrict to paid students
-            </label>
-          </div>
+        <div className="form-check mb-2">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="isPublic"
+            id="isPublic"
+            checked={form.isPublic}
+            onChange={(e) => setForm({ ...form, isPublic: e.target.checked })}
+          />
+          <label className="form-check-label" htmlFor="isPublic">
+            Allow access for unpaid students
+          </label>
         </div>
 
         <div className="form-check form-switch mb-2">
@@ -224,7 +205,7 @@ function UploadCourseContent({ courseId }) {
                 />
                 <input
                   type="text"
-                  placeholder="Subtitle URL (.vtt)"
+                  placeholder="Subtitle URL"
                   className="form-control"
                   value={sub.url}
                   onChange={(e) =>
