@@ -88,9 +88,25 @@ exports.getCourseById = async (req, res) => {
 
     const courseObj = course.toObject();
     if (!hasAccess) {
-      courseObj.courseContent = courseObj.courseContent.map((c) => ({
-        title: c.title,
-      }));
+      const now = new Date();
+      courseObj.courseContent = courseObj.courseContent.map((c) => {
+        const isAvailable =
+          c.isPublic || (c.visibleFrom && new Date(c.visibleFrom) <= now);
+        if (isAvailable) {
+          return {
+            title: c.title,
+            videoUrl: c.videoUrl,
+            isPublic: c.isPublic,
+            visibleFrom: c.visibleFrom,
+            subtitles: c.subtitles,
+          };
+        }
+        return {
+          title: c.title,
+          isPublic: c.isPublic,
+          visibleFrom: c.visibleFrom,
+        };
+      });
     }
 
     res.json({ message: 'Course retrieved successfully', course: courseObj, hasAccess });
