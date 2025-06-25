@@ -28,6 +28,7 @@ const Home = () => {
           <Tile title="Videos" icon="🎞️" link="/admin/videos" />
           <Tile title="Teachers" icon="🧑‍🏫" link="/admin/teachers" />
           <Tile title="Notices" icon="📢" link="/admin/notices" />
+          <Tile title="Products" icon="🛍️" link="/admin/products" />
           </>
         )}
       </div>

@@ -43,6 +43,8 @@ import EditTeacher from './pages/Admin/EditTeacher';
 import NoticeList from './pages/Admin/NoticeList';
 import CreateNotice from './pages/Admin/CreateNotice';
 import CreateProduct from './pages/Admin/CreateProduct';
+import ProductList from './pages/Admin/ProductList';
+import EditProduct from './pages/Admin/EditProduct';
 import RequireAdmin from './components/RequireAdmin';
 
 function App() {
@@ -99,7 +101,9 @@ function App() {
         <Route path="/admin/teachers/:teacherId/edit" element={<RequireAdmin><EditTeacher /></RequireAdmin>} />
         <Route path="/admin/notices" element={<RequireAdmin><NoticeList /></RequireAdmin>} />
         <Route path="/admin/notices/create" element={<RequireAdmin><CreateNotice /></RequireAdmin>} />
+        <Route path="/admin/products" element={<RequireAdmin><ProductList /></RequireAdmin>} />
         <Route path="/admin/products/create" element={<RequireAdmin><CreateProduct /></RequireAdmin>} />
+        <Route path="/admin/products/:productId/edit" element={<RequireAdmin><EditProduct /></RequireAdmin>} />
       </Routes>
     </BrowserRouter>
   );
