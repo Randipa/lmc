@@ -19,6 +19,7 @@ const Home = () => {
         <Tile title="Classes" icon="🎓" link="/classes" />
         <Tile title="Shop" icon="🛒" link="/shop" />
         <Tile title="Student Dashboard" icon="📊" link="/dashboard" />
+        <Tile title="Notices" icon="📢" link="/dashboard/notices" />
         <Tile title="E-Library" icon="📚" link="/e-library" />
         {user?.userRole === 'admin' && (
           <>

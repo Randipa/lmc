@@ -5,5 +5,6 @@ const { authenticateToken, requireAdmin } = require('../middleware/authMiddlewar
 
 router.post('/', authenticateToken, requireAdmin, controller.createNotice);
 router.get('/', controller.getNotices);
+router.get('/my', authenticateToken, controller.getMyNotices);
 
 module.exports = router;
