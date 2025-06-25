@@ -7,6 +7,7 @@ function Recordings() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [now] = useState(new Date());
+  const [notices, setNotices] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,6 +19,10 @@ function Recordings() {
       setLoading(false);
     })
     .catch(() => setLoading(false));
+
+    axios.get(`http://localhost:5000/api/notices?courseId=${classId}`)
+      .then(res => setNotices(res.data.notices || []))
+      .catch(() => setNotices([]));
   }, [classId]);
 
   if (loading) return <div className="container mt-5">Loading...</div>;
@@ -26,6 +31,16 @@ function Recordings() {
   return (
     <div className="container mt-4">
       <h3>{course.title} - Recordings</h3>
+
+      {notices.length > 0 && (
+        <div className="alert alert-warning">
+          {notices.map(n => (
+            <div key={n._id}>
+              <strong>{n.title}:</strong> {n.message}
+            </div>
+          ))}
+        </div>
+      )}
 
       {course.courseContent?.length === 0 && <p>No videos available</p>}
 
