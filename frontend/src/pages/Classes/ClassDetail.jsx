@@ -9,6 +9,8 @@ const ClassDetail = () => {
   const [loading, setLoading] = useState(true);
   const [slipUrl, setSlipUrl] = useState('');
   const [message, setMessage] = useState('');
+  const [hasAccess, setHasAccess] = useState(false);
+  const [now] = useState(new Date());
 
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -17,6 +19,7 @@ const ClassDetail = () => {
     api.get(`/courses/${classId}`)
       .then(res => {
         setClassData(res.data.course);
+        setHasAccess(res.data.hasAccess || false);
         setLoading(false);
       })
       .catch(() => {
@@ -24,6 +27,18 @@ const ClassDetail = () => {
         setLoading(false);
       });
   }, [classId]);
+
+  // Double-check access from user's enrolled courses
+  useEffect(() => {
+    if (!token) return;
+    if (hasAccess) return;
+    api.get('/users/my-courses')
+      .then(res => {
+        const enrolled = res.data.classes?.some(c => c._id === classId);
+        if (enrolled) setHasAccess(true);
+      })
+      .catch(() => {});
+  }, [classId, token, hasAccess]);
 
   const handleBankSubmit = async (e) => {
     e.preventDefault();
@@ -111,6 +126,36 @@ const ClassDetail = () => {
       )}
 
       {message && <div className="alert alert-info mt-4">{message}</div>}
+
+      <hr />
+      <h5>Class Content</h5>
+      {classData.courseContent?.length === 0 && <p>No videos available</p>}
+
+      {!hasAccess && classData.courseContent?.length > 0 && (
+        <div className="alert alert-warning">Please purchase this class to watch the videos.</div>
+      )}
+
+      {hasAccess &&
+        classData.courseContent?.map((video, index) => {
+          const isVisible = video.isPublic || new Date(video.visibleFrom) <= now;
+          return (
+            <div key={index} className="mb-5 border p-3 rounded">
+              <h6>{video.title}</h6>
+              {!isVisible ? (
+                <p className="text-danger">This video is not yet available.</p>
+              ) : (
+                <div className="ratio ratio-16x9 mb-2">
+                  <iframe
+                    src={video.videoUrl}
+                    title={video.title}
+                    loading="lazy"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              )}
+            </div>
+          );
+        })}
     </div>
   );
 };

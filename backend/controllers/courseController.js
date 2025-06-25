@@ -1,4 +1,6 @@
 const Course = require('../models/Course');
+const jwt = require('jsonwebtoken');
+const UserCourseAccess = require('../models/UserCourseAccess');
 
 // Create a new course
 exports.createCourse = async (req, res) => {
@@ -67,7 +69,29 @@ exports.getCourseById = async (req, res) => {
     const course = await Course.findById(id);
     if (!course) return res.status(404).json({ message: 'Course not found' });
 
-    res.json({ message: 'Course retrieved successfully', course });
+    let hasAccess = false;
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const access = await UserCourseAccess.findOne({
+          userId: decoded.userId,
+          courseId: id,
+          expiresAt: { $gt: new Date() }
+        });
+        hasAccess = !!access;
+      } catch (err) {
+        // ignore token errors
+      }
+    }
+
+    const courseObj = course.toObject();
+    if (!hasAccess) {
+      courseObj.courseContent = courseObj.courseContent.map((c) => ({ title: c.title }));
+    }
+
+    res.json({ message: 'Course retrieved successfully', course: courseObj, hasAccess });
   } catch (error) {
     console.error('Get course by ID error:', error);
     res.status(500).json({ message: 'Error fetching course', error: error.message });
