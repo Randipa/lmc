@@ -4,7 +4,6 @@ const courseSchema = new mongoose.Schema({
   grade: { type: String },
   subject: { type: String },
   teacherName: { type: String },
-  imageUrl: String,
 
   title: {
     type: String,

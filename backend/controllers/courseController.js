@@ -5,7 +5,7 @@ const UserCourseAccess = require('../models/UserCourseAccess');
 // Create a new course
 exports.createCourse = async (req, res) => {
   try {
-    const { title, description, price, durationInDays, type, grade, subject, teacherName, imageUrl } = req.body;
+    const { title, description, price, durationInDays, type, grade, subject, teacherName } = req.body;
 
     if (!title || !price) {
       return res.status(400).json({ message: 'Title and price are required' });
@@ -20,7 +20,6 @@ exports.createCourse = async (req, res) => {
       grade,
       subject,
       teacherName,
-      imageUrl,
       createdBy: req.user?.userId || null
     });
 
@@ -121,7 +120,7 @@ exports.getCourseById = async (req, res) => {
 exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, price, durationInDays, type, grade, subject, teacherName, imageUrl } = req.body;
+    const { title, description, price, durationInDays, type, grade, subject, teacherName } = req.body;
 
     const course = await Course.findByIdAndUpdate(
       id,
@@ -133,8 +132,7 @@ exports.updateCourse = async (req, res) => {
         type: type || 'class',
         grade,
         subject,
-        teacherName,
-        imageUrl
+        teacherName
       },
       { new: true, runValidators: true }
     );
@@ -161,7 +159,6 @@ exports.updateFullCourse = async (req, res) => {
       grade,
       subject,
       teacherName,
-      imageUrl,
       courseContent
     } = req.body;
 
@@ -176,7 +173,6 @@ exports.updateFullCourse = async (req, res) => {
     if (grade !== undefined) course.grade = grade;
     if (subject !== undefined) course.subject = subject;
     if (teacherName !== undefined) course.teacherName = teacherName;
-    if (imageUrl !== undefined) course.imageUrl = imageUrl;
 
     if (Array.isArray(courseContent)) {
       course.courseContent = courseContent.map((c) => ({
