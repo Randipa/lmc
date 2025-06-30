@@ -65,3 +65,20 @@ A 401 response usually means the Bunny API rejected the credentials. Double-chec
 6. Ensure no extra whitespace or newline characters are present in your `.env` values.
 
 
+## Deploying to Vercel
+
+Both the backend and frontend can be deployed as separate projects on Vercel. The repository already contains configuration files for each part.
+
+### Backend
+
+1. Inside the `backend` directory run `vercel` and create a new project.
+2. Vercel will detect the `vercel.json` file which builds `api/index.js` as a serverless function.
+3. Copy the variables from `backend/.env.example` into the project settings on Vercel. Use the same names so the Express app can access them.
+
+### Frontend
+
+1. In the `frontend` directory run `vercel` and create another project.
+2. Set the `VITE_API_BASE_URL` environment variable to the URL of the deployed backend followed by `/api`.
+3. Vercel uses `frontend/vercel.json` to build the Vite project and serve the compiled assets.
+
+After both deployments complete, the frontend will call the backend using the URL defined in `VITE_API_BASE_URL`.
