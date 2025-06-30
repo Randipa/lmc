@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api';
 
 function Recordings() {
   const { classId } = useParams();
@@ -11,23 +11,22 @@ function Recordings() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
+  const [hasAccess, setHasAccess] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    axios.get(`http://localhost:5000/api/courses/${classId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => {
-      setCourse(res.data.course);
-      // Auto-select first video if available
-      if (res.data.course.courseContent?.length > 0) {
-        setSelectedVideo(res.data.course.courseContent[0]);
-      }
-      setLoading(false);
-    })
-    .catch(() => setLoading(false));
+    api.get(`/courses/${classId}`)
+      .then(res => {
+        setCourse(res.data.course);
+        setHasAccess(res.data.hasAccess || false);
+        // Auto-select first video if available
+        if (res.data.course.courseContent?.length > 0) {
+          setSelectedVideo(res.data.course.courseContent[0]);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
 
-    axios.get(`http://localhost:5000/api/notices?courseId=${classId}`)
+    api.get(`/notices?courseId=${classId}`)
       .then(res => setNotices(res.data.notices || []))
       .catch(() => setNotices([]));
   }, [classId]);
@@ -113,7 +112,9 @@ function Recordings() {
           <h1 className="course-title">{course.title}</h1>
           <div className="course-meta">
             <span className="video-count">📹 {videos.length} recordings</span>
-            <span className="access-badge">🎓 Full Access</span>
+            {hasAccess && (
+              <span className="access-badge">🎓 Full Access</span>
+            )}
           </div>
         </div>
         
@@ -237,7 +238,7 @@ function Recordings() {
               
               <div className="videos-list">
                 {videos.map((video, index) => {
-                  const isVisible = video.isPublic || new Date(video.visibleFrom) <= now;
+                  const isVisible = hasAccess || video.isPublic || new Date(video.visibleFrom) <= now;
                   const isSelected = selectedVideo?._id === video._id || selectedVideo?.title === video.title;
                   
                   return (
