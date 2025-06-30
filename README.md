@@ -72,7 +72,7 @@ Both the backend and frontend can be deployed as separate projects on Vercel. Th
 ### Backend
 
 1. Inside the `backend` directory run `vercel` and create a new project.
-2. Vercel will detect the `vercel.json` file which builds `api/index.js` as a serverless function.
+2. Vercel will detect the `vercel.json` file which builds `index.js` as a serverless function.
 3. Copy the variables from `backend/.env.example` into the project settings on Vercel. Use the same names so the Express app can access them.
 
 ### Frontend
