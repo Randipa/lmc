@@ -79,9 +79,9 @@ exports.initiatePayment = async (req, res) => {
 
     await payment.save();
 
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.BASE_URL || 'http://localhost:5000';
+    const baseUrl =
+      process.env.BASE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5000');
 
     const paymentData = {
       sandbox: process.env.PAYHERE_SANDBOX === 'true',
