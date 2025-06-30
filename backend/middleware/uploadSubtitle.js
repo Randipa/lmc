@@ -6,11 +6,26 @@ const fs = require('fs');
 // filesystem for the application code, so default to the system temp directory
 // when running on Vercel. This can also be overridden with UPLOAD_DIR.
 const defaultDir = path.join(__dirname, '..', 'uploads', 'subtitles');
-const uploadDir = process.env.UPLOAD_DIR
+const fallbackDir = '/tmp/uploads/subtitles';
+
+let uploadDir = process.env.UPLOAD_DIR
   ? path.join(process.env.UPLOAD_DIR, 'subtitles')
-  : (process.env.VERCEL ? '/tmp/uploads/subtitles' : defaultDir);
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  : defaultDir;
+
+if (process.env.VERCEL && !process.env.UPLOAD_DIR) {
+  uploadDir = fallbackDir;
+}
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  // Fallback to /tmp when directory creation fails.
+  uploadDir = fallbackDir;
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 }
 
 const storage = multer.diskStorage({

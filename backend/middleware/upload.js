@@ -7,9 +7,24 @@ const fs = require('fs');
 // are read-only, so we fall back to the system temp directory which is
 // writable. Allow overriding via the UPLOAD_DIR environment variable.
 const defaultDir = path.join(__dirname, '..', 'uploads');
-const uploadDir = process.env.UPLOAD_DIR || (process.env.VERCEL ? '/tmp/uploads' : defaultDir);
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+const fallbackDir = '/tmp/uploads';
+
+let uploadDir = process.env.UPLOAD_DIR || defaultDir;
+
+if (process.env.VERCEL && !process.env.UPLOAD_DIR) {
+  uploadDir = fallbackDir;
+}
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  // In read-only environments the above may fail. Fallback to /tmp.
+  uploadDir = fallbackDir;
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 }
 
 const storage = multer.diskStorage({
