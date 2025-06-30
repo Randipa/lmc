@@ -12,6 +12,7 @@ function Recordings() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [hasAccess, setHasAccess] = useState(false);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     api.get(`/courses/${classId}`)
@@ -36,6 +37,17 @@ function Recordings() {
       .then(res => setNotices(res.data.notices || []))
       .catch(() => setNotices([]));
   }, [classId]);
+
+  useEffect(() => {
+    if (!token) return;
+    if (hasAccess) return;
+    api.get('/users/my-courses')
+      .then(res => {
+        const enrolled = res.data.classes?.some(c => c._id === classId);
+        if (enrolled) setHasAccess(true);
+      })
+      .catch(() => {});
+  }, [classId, token, hasAccess]);
 
   const formatDuration = (duration) => {
     if (!duration) return '00:00';
