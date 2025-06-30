@@ -742,7 +742,7 @@ function CourseUploader() {
                           checked={item.paidAccess}
                           onChange={(e) => updateContentItem(item.id, 'paidAccess', e.target.checked)}
                         />
-                        <label htmlFor={`paid-${item.id}`}>Access paid Student</label>
+                        <label htmlFor={`paid-${item.id}`}>Restrict to paid students</label>
                       </div>
                       <div className="access-option">
                         <input 
@@ -752,7 +752,7 @@ function CourseUploader() {
                           checked={item.unpaidAccess}
                           onChange={(e) => updateContentItem(item.id, 'unpaidAccess', e.target.checked)}
                         />
-                        <label htmlFor={`unpaid-${item.id}`}>Access unpaid all Student</label>
+                        <label htmlFor={`unpaid-${item.id}`}>Allow access for unpaid students</label>
                       </div>
                     </div>
                   </div>
