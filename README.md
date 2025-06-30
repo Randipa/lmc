@@ -78,7 +78,11 @@ Both the backend and frontend can be deployed as separate projects on Vercel. Th
 ### Frontend
 
 1. In the `frontend` directory run `vercel` and create another project.
-2. Set the `VITE_API_BASE_URL` environment variable to the URL of the deployed backend followed by `/api`.
+2. Set the `VITE_API_BASE_URL` environment variable to the URL of the deployed backend followed by `/api`. For example:
+
+```bash
+VITE_API_BASE_URL=https://lmc-server.vercel.app/api
+```
 3. Vercel uses `frontend/vercel.json` to build the Vite project and serve the compiled assets.
 
 After both deployments complete, the frontend will call the backend using the URL defined in `VITE_API_BASE_URL`.
