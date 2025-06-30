@@ -89,7 +89,10 @@ exports.uploadCourseVideo = async (req, res) => {
       videoUrl,
       isPublic: isPublic === 'true',
       visibleFrom: visibleFrom ? new Date(visibleFrom) : null,
-      subtitles: subtitles ? JSON.parse(subtitles) : []
+      subtitles: subtitles ? JSON.parse(subtitles) : [],
+      description: req.body.description,
+      duration: req.body.duration,
+      hidden: req.body.hidden === 'true'
     };
 
     course.courseContent.push(contentItem);

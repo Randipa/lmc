@@ -87,6 +87,19 @@ exports.getCourseById = async (req, res) => {
     }
 
     const courseObj = course.toObject();
+    const authToken = req.headers.authorization?.split(' ')[1];
+    let isAdmin = false;
+    if (authToken) {
+      try {
+        const decodedAdmin = jwt.verify(authToken, process.env.JWT_SECRET);
+        isAdmin = decodedAdmin.userRole === 'admin';
+      } catch {}
+    }
+
+    if (!isAdmin) {
+      courseObj.courseContent = courseObj.courseContent.filter(c => !c.hidden);
+    }
+
     if (!hasAccess) {
       const now = new Date();
       courseObj.courseContent = courseObj.courseContent.map((c) => {
@@ -179,6 +192,9 @@ exports.updateFullCourse = async (req, res) => {
         title: c.title,
         videoId: c.videoId,
         videoUrl: c.videoUrl,
+        description: c.description,
+        duration: c.duration,
+        hidden: !!c.hidden,
         isPublic: !!c.isPublic,
         visibleFrom: c.visibleFrom ? new Date(c.visibleFrom) : null,
         subtitles: Array.isArray(c.subtitles)
@@ -216,9 +232,20 @@ exports.getCourseContent = async (req, res) => {
     const course = await Course.findById(id, 'courseContent title');
     if (!course) return res.status(404).json({ message: 'Course not found' });
 
-    const paidContent = course.courseContent.filter(c => !c.isPublic);
-    const unpaidContent = course.courseContent.filter(c => c.isPublic);
-    const subtitles = course.courseContent.flatMap(c =>
+    const authToken = req.headers.authorization?.split(' ')[1];
+    let isAdmin = false;
+    if (authToken) {
+      try {
+        const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+        isAdmin = decoded.userRole === 'admin';
+      } catch {}
+    }
+
+    const filterHidden = c => !c.hidden || isAdmin;
+
+    const paidContent = course.courseContent.filter(c => !c.isPublic && filterHidden(c));
+    const unpaidContent = course.courseContent.filter(c => c.isPublic && filterHidden(c));
+    const subtitles = course.courseContent.filter(filterHidden).flatMap(c =>
       c.subtitles.map(s => ({
         id: s._id,
         videoId: c.videoId,
@@ -239,7 +266,7 @@ exports.getCourseContent = async (req, res) => {
 // Add Bunny.net video to a course
 exports.addCourseContent = async (req, res) => {
   try {
-    const { title, videoId, videoUrl, isPublic, visibleFrom, subtitles, contentType, description, duration } = req.body;
+    const { title, videoId, videoUrl, isPublic, visibleFrom, subtitles, contentType, description, duration, hidden } = req.body;
     const courseId = req.params.id;
 
     const course = await Course.findById(courseId);
@@ -251,6 +278,7 @@ exports.addCourseContent = async (req, res) => {
       videoUrl,
       description,
       duration,
+      hidden: !!hidden,
       isPublic: typeof isPublic === 'boolean' ? isPublic : contentType === 'unpaid',
       visibleFrom,
       subtitles
@@ -279,6 +307,9 @@ exports.updateCourseContent = async (req, res) => {
     content.title = update.title ?? content.title;
     content.videoId = update.videoId ?? content.videoId;
     content.videoUrl = update.videoUrl ?? content.videoUrl;
+    if (update.description !== undefined) content.description = update.description;
+    if (update.duration !== undefined) content.duration = update.duration;
+    if (update.hidden !== undefined) content.hidden = update.hidden;
     if (update.isPublic !== undefined) content.isPublic = update.isPublic;
     if (update.visibleFrom !== undefined)
       content.visibleFrom = update.visibleFrom ? new Date(update.visibleFrom) : null;

@@ -687,7 +687,7 @@ const ClassDetail = () => {
           📚 Course Content
         </h2>
 
-        {!classData.courseContent || classData.courseContent.length === 0 ? (
+        {!classData.courseContent || classData.courseContent.filter(v => !v.hidden).length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">📹</div>
             <h3>No videos available</h3>
@@ -695,7 +695,7 @@ const ClassDetail = () => {
           </div>
         ) : (
           <div className="video-grid">
-            {classData.courseContent.map((video, index) => {
+            {classData.courseContent.filter(v => !v.hidden).map((video, index) => {
               const videoStatus = getVideoStatus(video);
               const canView = canViewVideo(video);
               

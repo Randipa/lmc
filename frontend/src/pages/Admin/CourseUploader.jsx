@@ -19,7 +19,7 @@ function CourseUploader() {
 
   // New state for content management
   const [contentItems, setContentItems] = useState([
-    { id: Date.now(), title: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
+    { id: Date.now(), title: '', description: '', duration: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
   ]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -57,14 +57,16 @@ function CourseUploader() {
         const loadedItems = allContent.map(content => ({
           id: content._id || Date.now() + Math.random(),
           title: content.title || '',
+          description: content.description || '',
+          duration: content.duration || '',
           videoUrl: content.videoUrl || content.url || '',
           paidAccess: data.paidContent?.some(p => p._id === content._id) || false,
           unpaidAccess: data.unpaidContent?.some(u => u._id === content._id) || false,
-          hidden: false,
+          hidden: !!content.hidden,
           existingId: content._id
         }));
         setContentItems(loadedItems.length > 0 ? loadedItems : [
-          { id: Date.now(), title: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
+          { id: Date.now(), title: '', description: '', duration: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
         ]);
       }
     } catch (error) {
@@ -75,7 +77,7 @@ function CourseUploader() {
   const addContentItem = () => {
     setContentItems(prev => [
       ...prev,
-      { id: Date.now(), title: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
+      { id: Date.now(), title: '', description: '', duration: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }
     ]);
   };
 
@@ -109,8 +111,8 @@ function CourseUploader() {
         const contentData = {
           title: item.title,
           videoUrl: item.videoUrl,
-          description: `Video content: ${item.title}`,
-          duration: '00:00',
+          description: item.description || `Video content: ${item.title}`,
+          duration: item.duration || '00:00',
           hidden: item.hidden
         };
 
@@ -155,7 +157,7 @@ function CourseUploader() {
 
   const deleteContent = () => {
     if (window.confirm('Are you sure you want to delete all content?')) {
-      setContentItems([{ id: Date.now(), title: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }]);
+      setContentItems([{ id: Date.now(), title: '', description: '', duration: '', videoUrl: '', paidAccess: false, unpaidAccess: false, hidden: false }]);
       alert('All content deleted!');
     }
   };
@@ -697,10 +699,12 @@ function CourseUploader() {
                       </div>
                       <div className="input-group">
                         <label className="input-label">Additional Info</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           className="form-input"
                           placeholder="Optional description"
+                          value={item.description}
+                          onChange={(e) => updateContentItem(item.id, 'description', e.target.value)}
                         />
                       </div>
                     </div>
@@ -718,10 +722,12 @@ function CourseUploader() {
                       </div>
                       <div className="input-group">
                         <label className="input-label">Duration</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           className="form-input"
                           placeholder="00:00"
+                          value={item.duration}
+                          onChange={(e) => updateContentItem(item.id, 'duration', e.target.value)}
                         />
                       </div>
                     </div>

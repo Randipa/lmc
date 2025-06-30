@@ -48,6 +48,9 @@ const courseSchema = new mongoose.Schema({
       title: String,
       videoId: String, // Bunny video GUID
       videoUrl: String, // embed url
+      description: String,
+      duration: String,
+      hidden: { type: Boolean, default: false },
       isPublic: { type: Boolean, default: false },
       visibleFrom: Date,
       subtitles: [
