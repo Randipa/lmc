@@ -68,22 +68,22 @@ app.use((req, res) => {
 
 // Connect to MongoDB (removed deprecated options)
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log(' MongoDB connected'))
+  .catch(err => console.error(' MongoDB connection error:', err));
 
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📁 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(` Server running on port ${PORT}`);
+    console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
 
     // Log environment variables status (without exposing values)
-    console.log('🔧 Environment check:');
-    console.log(`   MONGO_URI: ${process.env.MONGO_URI ? '✅ Set' : '❌ Missing'}`);
-    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✅ Set' : '❌ Missing'}`);
-    console.log(`   BUNNY_API_KEY: ${process.env.BUNNY_API_KEY ? '✅ Set' : '❌ Missing'}`);
-    console.log(`   BUNNY_LIBRARY_ID: ${process.env.BUNNY_LIBRARY_ID ? '✅ Set' : '❌ Missing'}`);
-    console.log(`   PAYHERE_MERCHANT_ID: ${process.env.PAYHERE_MERCHANT_ID ? '✅ Set' : '❌ Missing'}`);
+    console.log(' Environment check:');
+    console.log(`   MONGO_URI: ${process.env.MONGO_URI ? ' Set' : ' Missing'}`);
+    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? ' Set' : ' Missing'}`);
+    console.log(`   BUNNY_API_KEY: ${process.env.BUNNY_API_KEY ? ' Set' : ' Missing'}`);
+    console.log(`   BUNNY_LIBRARY_ID: ${process.env.BUNNY_LIBRARY_ID ? ' Set' : ' Missing'}`);
+    console.log(`   PAYHERE_MERCHANT_ID: ${process.env.PAYHERE_MERCHANT_ID ? ' Set' : ' Missing'}`);
   });
 }
 
