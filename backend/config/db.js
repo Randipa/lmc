@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// recommended setting for newer mongoose versions
+mongoose.set('strictQuery', false);
+
 /**
  * Cached connection across Vercel serverless invocations.
  * Without caching a new connection is created for every request which can
@@ -15,14 +18,19 @@ const connectDB = async () => {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      keepAlive: true,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    };
+
     cached.promise = mongoose
-      .connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      })
-      .then((mongoose) => {
+      .connect(process.env.MONGO_URI, options)
+      .then((mongooseInstance) => {
         console.log('MongoDB Connected');
-        return mongoose;
+        return mongooseInstance;
       })
       .catch((error) => {
         cached.promise = null;
@@ -34,5 +42,17 @@ const connectDB = async () => {
   cached.conn = await cached.promise;
   return cached.conn;
 };
+
+// If the connection is dropped, clear the cached connection so that a new
+// connection can be established on the next invocation.
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected');
+  cached.conn = null;
+  cached.promise = null;
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB error:', err);
+});
 
 module.exports = connectDB;
