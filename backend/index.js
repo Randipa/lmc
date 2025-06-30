@@ -66,13 +66,8 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Connect to MongoDB with a short server selection timeout so a missing or
-// unreachable database doesn't cause the Vercel function to hang for the full
-// 300 second Lambda timeout. This fails fast and surfaces the error to the
-// caller instead of returning a 504 gateway timeout.
-mongoose.connect(process.env.MONGO_URI, {
-  serverSelectionTimeoutMS: 5000
-})
+// Connect to MongoDB (removed deprecated options)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log(' MongoDB connected'))
   .catch(err => console.error(' MongoDB connection error:', err));
 
