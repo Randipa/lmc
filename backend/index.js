@@ -56,6 +56,16 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api', productRoutes);
 
+// Basic health check route for root path
+app.get('/', (req, res) => {
+  res.send('Backend is running');
+});
+
+// Catch-all for unmatched routes to prevent hanging requests
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
 // Connect to MongoDB (removed deprecated options)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
