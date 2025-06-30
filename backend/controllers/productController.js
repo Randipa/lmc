@@ -99,9 +99,9 @@ exports.initiateCheckout = async (req, res) => {
     const amount = total.toFixed(2);
     const hash = generatePayHereHash(merchantId, orderId, amount, currency, merchantSecret);
 
-    const baseUrl =
-      process.env.BASE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5000');
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.BASE_URL || 'http://localhost:5000';
 
     const paymentData = {
       sandbox: process.env.PAYHERE_SANDBOX === 'true',
