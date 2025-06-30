@@ -26,8 +26,7 @@ function CreateTeacher() {
       setMessage('Teacher created');
       navigate('/admin/teachers');
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Creation failed';
-      setMessage(msg);
+      setMessage('Creation failed');
     }
   };
 
