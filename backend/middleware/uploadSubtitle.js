@@ -2,7 +2,13 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '..', 'uploads', 'subtitles');
+// Directory for subtitle uploads. Serverless environments use a read-only
+// filesystem for the application code, so default to the system temp directory
+// when running on Vercel. This can also be overridden with UPLOAD_DIR.
+const defaultDir = path.join(__dirname, '..', 'uploads', 'subtitles');
+const uploadDir = process.env.UPLOAD_DIR
+  ? path.join(process.env.UPLOAD_DIR, 'subtitles')
+  : (process.env.VERCEL ? '/tmp/uploads/subtitles' : defaultDir);
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
