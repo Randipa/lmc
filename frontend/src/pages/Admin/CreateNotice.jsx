@@ -34,8 +34,7 @@ function CreateNotice() {
       setMessage('Notice created');
       navigate('/admin/notices');
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Creation failed';
-      setMessage(msg);
+      setMessage('Creation failed');
     }
   };
 
