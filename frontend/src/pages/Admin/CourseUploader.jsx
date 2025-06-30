@@ -82,8 +82,21 @@ function CourseUploader() {
   };
 
   const updateContentItem = (id, field, value) => {
-    setContentItems(prev => prev.map(item => 
+    setContentItems(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
+    ));
+  };
+
+  // Ensure only one access type is selected at a time
+  const setAccessForItem = (id, type) => {
+    setContentItems(prev => prev.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            paidAccess: type === 'paid',
+            unpaidAccess: type === 'unpaid'
+          }
+        : item
     ));
   };
 
@@ -96,12 +109,14 @@ function CourseUploader() {
   };
 
   const saveAllContent = async () => {
-    const invalidItems = contentItems.filter(item => 
-      !item.title.trim() || !item.videoUrl.trim() || (!item.paidAccess && !item.unpaidAccess)
+    const invalidItems = contentItems.filter(item =>
+      !item.title.trim() ||
+      !item.videoUrl.trim() ||
+      item.paidAccess === item.unpaidAccess
     );
 
     if (invalidItems.length > 0) {
-      alert('Please fill in all fields and select at least one access type for each content item.');
+      alert('Please fill in all fields and choose either paid or unpaid access for each content item.');
       return;
     }
 
@@ -119,25 +134,20 @@ function CourseUploader() {
         if (item.existingId) {
           await api.put(`/courses/${courseId}/content/${item.existingId}`, {
             ...contentData,
-            paidAccess: item.paidAccess,
-            unpaidAccess: item.unpaidAccess
+            isPublic: item.unpaidAccess
           });
-        } else {
-          if (item.paidAccess) {
-            await api.post(`/courses/${courseId}/content`, {
-              ...contentData,
-              isPublic: false,
-              contentType: 'paid'
-            });
-          }
-
-          if (item.unpaidAccess) {
-            await api.post(`/courses/${courseId}/content`, {
-              ...contentData,
-              isPublic: true,
-              contentType: 'unpaid'
-            });
-          }
+        } else if (item.paidAccess) {
+          await api.post(`/courses/${courseId}/content`, {
+            ...contentData,
+            isPublic: false,
+            contentType: 'paid'
+          });
+        } else if (item.unpaidAccess) {
+          await api.post(`/courses/${courseId}/content`, {
+            ...contentData,
+            isPublic: true,
+            contentType: 'unpaid'
+          });
         }
       }
 
@@ -735,22 +745,24 @@ function CourseUploader() {
                     {/* Access Controls */}
                     <div className="access-controls">
                       <div className="access-option">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="radio"
+                          name={`access-${item.id}`}
                           className="access-checkbox"
                           id={`paid-${item.id}`}
                           checked={item.paidAccess}
-                          onChange={(e) => updateContentItem(item.id, 'paidAccess', e.target.checked)}
+                          onChange={() => setAccessForItem(item.id, 'paid')}
                         />
                         <label htmlFor={`paid-${item.id}`}>Restrict to paid students</label>
                       </div>
                       <div className="access-option">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="radio"
+                          name={`access-${item.id}`}
                           className="access-checkbox"
                           id={`unpaid-${item.id}`}
                           checked={item.unpaidAccess}
-                          onChange={(e) => updateContentItem(item.id, 'unpaidAccess', e.target.checked)}
+                          onChange={() => setAccessForItem(item.id, 'unpaid')}
                         />
                         <label htmlFor={`unpaid-${item.id}`}>Allow access for unpaid students</label>
                       </div>
