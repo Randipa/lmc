@@ -16,11 +16,17 @@ function Recordings() {
   useEffect(() => {
     api.get(`/courses/${classId}`)
       .then(res => {
-        setCourse(res.data.course);
+        const courseData = res.data.course;
+        // filter out hidden content just in case backend returns it
+        if (Array.isArray(courseData.courseContent)) {
+          courseData.courseContent = courseData.courseContent.filter(c => !c.hidden);
+        }
+
+        setCourse(courseData);
         setHasAccess(res.data.hasAccess || false);
-        // Auto-select first video if available
-        if (res.data.course.courseContent?.length > 0) {
-          setSelectedVideo(res.data.course.courseContent[0]);
+        // Auto-select first visible video if available
+        if (courseData.courseContent?.length > 0) {
+          setSelectedVideo(courseData.courseContent[0]);
         }
         setLoading(false);
       })
@@ -47,10 +53,12 @@ function Recordings() {
 
   const filteredAndSortedVideos = () => {
     if (!course?.courseContent) return [];
-    
-    let videos = course.courseContent.filter(video =>
-      video.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
+    let videos = course.courseContent
+      .filter(video => !video.hidden)
+      .filter(video =>
+        video.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
     switch (sortBy) {
       case 'newest':
