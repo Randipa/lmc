@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
-const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -56,10 +56,9 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api', productRoutes);
 
-// Connect to MongoDB (removed deprecated options)
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log(' MongoDB connected'))
-  .catch(err => console.error(' MongoDB connection error:', err));
+// Connect to MongoDB. When deployed to Vercel the same instance may handle
+// multiple requests, so reuse the cached connection from ./config/db.js.
+connectDB().catch(err => console.error(' MongoDB connection error:', err));
 
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
