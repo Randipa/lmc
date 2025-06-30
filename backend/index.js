@@ -1,5 +1,6 @@
 // app.js
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
@@ -23,8 +24,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded files. When running in a serverless environment such as Vercel
+// the application directory is read-only, so store temporary uploads in /tmp.
+const defaultUploadDir = path.join(__dirname, 'uploads');
+const uploadsDir = process.env.UPLOAD_DIR || (process.env.VERCEL ? '/tmp/uploads' : defaultUploadDir);
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Session Middleware (required if using session in payment flow)
 app.use(

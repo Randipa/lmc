@@ -2,10 +2,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Directory where temporary uploads will be stored before
-// being sent to Bunny.net. Multer does not create this
-// automatically, so ensure it exists.
-const uploadDir = path.join(__dirname, '..', 'uploads');
+// Directory where temporary uploads will be stored before being sent to
+// Bunny.net. In serverless environments like Vercel the application files
+// are read-only, so we fall back to the system temp directory which is
+// writable. Allow overriding via the UPLOAD_DIR environment variable.
+const defaultDir = path.join(__dirname, '..', 'uploads');
+const uploadDir = process.env.UPLOAD_DIR || (process.env.VERCEL ? '/tmp/uploads' : defaultDir);
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
