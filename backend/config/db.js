@@ -18,10 +18,12 @@ const connectDB = async () => {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    // The Node.js MongoDB driver v6 removed the deprecated `keepAlive` option.
+    // Mongoose will handle connection pooling internally, so we no longer pass
+    // that setting here. The other options remain for backwards compatibility.
     const options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      keepAlive: true,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
     };
