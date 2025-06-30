@@ -65,7 +65,8 @@ function CreateCourse() {
       setStep('content');
       setMessage('Course created. Now add content');
     } catch (err) {
-      setMessage('Creation failed');
+      const msg = err?.response?.data?.message || 'Creation failed';
+      setMessage(msg);
     }
   };
 
