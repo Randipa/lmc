@@ -74,6 +74,8 @@ Both the backend and frontend can be deployed as separate projects on Vercel. Th
 1. Inside the `backend` directory run `vercel` and create a new project.
 2. Vercel will detect the `vercel.json` file which builds `index.js` as a serverless function.
 3. Copy the variables from `backend/.env.example` into the project settings on Vercel. Use the same names so the Express app can access them.
+4. Set `BASE_URL` to the full HTTPS URL of the deployed backend. If omitted, the server will try to detect the value from the `VERCEL_URL` environment variable.
+   Make sure this URL is also registered in your PayHere account or payments will be rejected as **Unauthorized**.
 
 ### Frontend
 
