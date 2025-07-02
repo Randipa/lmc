@@ -74,8 +74,9 @@ Both the backend and frontend can be deployed as separate projects on Vercel. Th
 1. Inside the `backend` directory run `vercel` and create a new project.
 2. Vercel will detect the `vercel.json` file which builds `index.js` as a serverless function.
 3. Copy the variables from `backend/.env.example` into the project settings on Vercel. Use the same names so the Express app can access them.
-4. Ensure your MongoDB cluster allows connections from Vercel. If you use MongoDB Atlas, add `0.0.0.0/0` or the specific Vercel IPs to your access list, otherwise database connections may fail after a cold start.
-5. Set `BASE_URL` to the full HTTPS URL of the deployed backend. If omitted, the server will try to detect the value from the `VERCEL_URL` environment variable.
+4. A database connection middleware now ensures MongoDB is available before handling each request. If you experienced `Operation buffering timed out after 10000ms` errors on Vercel, redeploy with this update.
+5. Ensure your MongoDB cluster allows connections from Vercel. If you use MongoDB Atlas, add `0.0.0.0/0` or the specific Vercel IPs to your access list, otherwise database connections may fail after a cold start.
+6. Set `BASE_URL` to the full HTTPS URL of the deployed backend. If omitted, the server will try to detect the value from the `VERCEL_URL` environment variable.
    Make sure this URL is also registered in your PayHere account or payments will be rejected as **Unauthorized**.
 
 ### Frontend
