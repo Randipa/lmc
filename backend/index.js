@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const ensureDb = require('./middleware/dbConnect');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
@@ -23,6 +24,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(ensureDb);
 
 // Serve uploaded files. When running in a serverless environment such as Vercel
 // the application directory is read-only, so store temporary uploads in /tmp.
@@ -56,9 +58,7 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api', productRoutes);
 
-// Connect to MongoDB. When deployed to Vercel the same instance may handle
-// multiple requests, so reuse the cached connection from ./config/db.js.
-connectDB().catch(err => console.error(' MongoDB connection error:', err));
+// Database connection handled via middleware for each request
 
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
